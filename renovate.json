@@ -30,7 +30,9 @@
   },
   "prBodyNotes": [
     "<!-- lan-infra: include digests + links so reviewers can see what changed -->",
-    "If this is a digest-only update, the *tag* may be unchanged — use the Digest column + source/release-notes links above to review what actually changed."
+    "If this is a digest-only update, the *tag* may be unchanged — use the Digest column + source/release-notes links above to review what actually changed.",
+    "",
+    "This repo also generates a best-effort metadata note for each image update under `renovate/image-diff/` (created/revision/source + a compare link when the image includes OCI labels)."
   ],
   "timezone": "America/Vancouver",
   "schedule": [
@@ -45,7 +47,15 @@
       "matchDatasources": [
         "docker"
       ],
-      "pinDigests": true
+      "pinDigests": true,
+      "postUpgradeTasks": {
+        "commands": [
+          "node scripts/renovate-image-diff.mjs '{{{depName}}}' '{{{currentDigest}}}' '{{{newDigest}}}' '{{{sourceUrl}}}'"
+        ],
+        "fileFilters": [
+          "renovate/image-diff/**/*.md"
+        ]
+      }
     },
     {
       "description": "Do not auto-propose major version upgrades for core databases",
