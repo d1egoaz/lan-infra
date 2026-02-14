@@ -21,7 +21,13 @@ jobs:
       - name: Detect changed services
         id: detect-services
         run: |
+          set -e  # Exit on error
           echo "Checking for changed compose files..."
+          echo "Current directory: $(pwd)"
+          echo "Git status:"
+          git status --short
+          echo "Git log -2:"
+          git log --oneline -2
           
           # First check if we have a previous commit to diff against
           if ! git rev-parse HEAD~1 >/dev/null 2>&1; then
@@ -32,7 +38,9 @@ jobs:
           fi
           
           # Get list of changed files
+          echo "Running: git diff --name-only HEAD~1 HEAD"
           CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+          echo "CHANGED_FILES: '$CHANGED_FILES'"
           
           if [ -z "$CHANGED_FILES" ]; then
             echo "📝 No files changed between commits"
