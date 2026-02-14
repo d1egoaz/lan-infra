@@ -21,7 +21,6 @@ jobs:
       - name: Detect changed services
         id: detect-services
         run: |
-          set -e  # Exit on error
           echo "Checking for changed compose files..."
           echo "Current directory: $(pwd)"
           echo "Git status:"
