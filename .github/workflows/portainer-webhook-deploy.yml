@@ -80,14 +80,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ${{ fromJson(needs.detect-and-deploy.outputs.services == '' ? '[]' : format('[\"{0}\"]', replace(needs.detect-and-deploy.outputs.services, ',', '\",\"'))) }}
+        service: ${{ fromJson(needs.detect-and-deploy.outputs.services == '' && '[]' || '[\"' + replace(needs.detect-and-deploy.outputs.services, ',', '\",\"') + '\"]') }}
     steps:
       - name: Deploy service ${{ matrix.service }}
         env:
           # Construct secret name from service name
           # e.g., hello -> PORTAINER_WEBHOOK_HELLO
           SECRET_NAME: PORTAINER_WEBHOOK_${{ upper(matrix.service) }}
-          WEBHOOK_URL: ${{ secrets[format('PORTAINER_WEBHOOK_{0}', upper(matrix.service))] }}
+          WEBHOOK_URL: ${{ secrets['PORTAINER_WEBHOOK_' + upper(matrix.service)] }}
         run: |
           echo "Deploying service: ${{ matrix.service }}"
           echo "Looking for secret: $SECRET_NAME"
