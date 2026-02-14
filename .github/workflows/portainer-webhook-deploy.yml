@@ -40,20 +40,22 @@ jobs:
           
           # Filter for compose.yaml files in service directories
           CHANGED_SERVICES=""
-          for file in $CHANGED_FILES; do
-            if [[ "$file" == services/*/compose.yaml ]]; then
-              # Extract service name from path (e.g., services/hello/compose.yaml -> hello)
-              SERVICE_NAME=$(echo "$file" | cut -d'/' -f2)
-              echo "Found changed service: $SERVICE_NAME (file: $file)"
-              
-              # Add to list (comma-separated)
-              if [ -z "$CHANGED_SERVICES" ]; then
-                CHANGED_SERVICES="$SERVICE_NAME"
-              else
-                CHANGED_SERVICES="$CHANGED_SERVICES,$SERVICE_NAME"
+          if [ -n "$CHANGED_FILES" ]; then
+            for file in $CHANGED_FILES; do
+              if [[ "$file" == services/*/compose.yaml ]]; then
+                # Extract service name from path (e.g., services/hello/compose.yaml -> hello)
+                SERVICE_NAME=$(echo "$file" | cut -d'/' -f2)
+                echo "Found changed service: $SERVICE_NAME (file: $file)"
+                
+                # Add to list (comma-separated)
+                if [ -z "$CHANGED_SERVICES" ]; then
+                  CHANGED_SERVICES="$SERVICE_NAME"
+                else
+                  CHANGED_SERVICES="$CHANGED_SERVICES,$SERVICE_NAME"
+                fi
               fi
-            fi
-          done
+            done
+          fi
           
           if [ -z "$CHANGED_SERVICES" ]; then
             echo "No service compose files changed"
