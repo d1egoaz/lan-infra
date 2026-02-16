@@ -1,45 +1,45 @@
-#!/bin/sh
+#!/bin/bash
 #
-# Entrypoint for Portainer backup container
-# Runs backup at specified hour (default: 03:00) daily
+# Entrypoint: Sets up cron and runs backup scheduler
 #
 
-set -eu
+set -euo pipefail
 
-BACKUP_HOUR="${BACKUP_HOUR:-3}"
-BACKUP_MINUTE="${BACKUP_MINUTE:-0}"
+SCHEDULE="${BACKUP_SCHEDULE:-0 3 * * *}"
 
-# Run immediately if FIRST_RUN=true (for testing)
-if [ "${FIRST_RUN:-false}" = "true" ]; then
-    echo "[$(date)] Running first backup..."
-    /backup.sh
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
+log "Portainer Backup Service"
+log "========================"
+log "Schedule: $SCHEDULE"
+log "Backup dir: $BACKUP_DIR"
+log "Portainer: $PORTAINER_URL"
+log "Retention: ${RETENTION_DAILY}d/${RETENTION_WEEKLY}w/${RETENTION_MONTHLY}m"
+
+# Setup crontab with proper environment
+{
+    echo "SHELL=/bin/sh"
+    echo "PATH=/usr/local/bin:/usr/bin:/bin"
+    echo "BACKUP_DIR=$BACKUP_DIR"
+    echo "PORTAINER_URL=$PORTAINER_URL"
+    echo "PORTAINER_API_KEY=$PORTAINER_API_KEY"
+    echo "RETENTION_DAILY=${RETENTION_DAILY:-7}"
+    echo "RETENTION_WEEKLY=${RETENTION_WEEKLY:-28}"
+    echo "RETENTION_MONTHLY=${RETENTION_MONTHLY:-90}"
+    echo "PRE_BACKUP_HOOK=${PRE_BACKUP_HOOK:-}"
+    echo "POST_BACKUP_HOOK=${POST_BACKUP_HOOK:-}"
+    echo "$SCHEDULE /scripts/backup.sh >> /backups/backup.log 2>&1"
+} | crontab -
+
+log "Cron schedule installed"
+
+# First-run immediate backup (for testing)
+if [[ "${FIRST_RUN:-false}" == "true" ]]; then
+    log "FIRST_RUN enabled - executing backup now..."
+    /scripts/backup.sh || log "Initial backup failed (check logs)"
 fi
 
-echo "[$(date)] Portainer backup scheduler started"
-echo "[$(date)] Schedule: daily at ${BACKUP_HOUR}:${BACKUP_MINUTE}"
-
-while true; do
-    # Calculate seconds until next backup
-    NOW=$(date +%s)
-    TODAY=$(date +%Y-%m-%d)
-    NEXT="${TODAY} ${BACKUP_HOUR}:$(printf '%02d' $BACKUP_MINUTE):00"
-    NEXT_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$NEXT" +%s 2>/dev/null || date -d "$NEXT" +%s 2>/dev/null)
-    
-    # If next backup time has passed today, schedule for tomorrow
-    if [ "$NEXT_TS" -le "$NOW" ]; then
-        TOMORROW=$(date -j -v+1d +%Y-%m-%d 2>/dev/null || date -d "tomorrow" +%Y-%m-%d)
-        NEXT="${TOMORROW} ${BACKUP_HOUR}:$(printf '%02d' $BACKUP_MINUTE):00"
-        NEXT_TS=$(date -j -f "%Y-%m-%d %H:%M:%S" "$NEXT" +%s 2>/dev/null || date -d "$NEXT" +%s)
-    fi
-    
-    SLEEP_SECONDS=$(( NEXT_TS - NOW ))
-    HOURS=$(( SLEEP_SECONDS / 3600 ))
-    MINS=$(( (SLEEP_SECONDS % 3600) / 60 ))
-    
-    echo "[$(date)] Next backup in ${HOURS}h ${MINS}m (at $NEXT)"
-    
-    sleep "$SLEEP_SECONDS"
-    
-    echo "[$(date)] Running scheduled backup..."
-    /backup.sh
-done
+log "Starting cron daemon..."
+exec crond -f -d 6
