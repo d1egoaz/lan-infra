@@ -13,11 +13,6 @@ if [ -z "$PORTAINER_API_KEY" ]; then
   exit 1
 fi
 
-if [ -z "$RESTIC_PASSWORD" ]; then
-  log "ERROR: RESTIC_PASSWORD must be set"
-  exit 1
-fi
-
 log "Portainer Backup Sidecar"
 log "Schedule: $BACKUP_SCHEDULE"
 log "Portainer API: $PORTAINER_API_URL"

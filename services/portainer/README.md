@@ -33,7 +33,6 @@ docker compose up -d
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORTAINER_API_KEY` | - | **Required.** Portainer API key |
-| `RESTIC_PASSWORD` | - | **Required.** Restic repository encryption password |
 | `RESTIC_REPOSITORY` | `/backups` | Restic repository path (container path) |
 | `BACKUP_SCHEDULE` | `0 3 * * *` | Cron schedule for backups |
 | `KEEP_DAILY` | `7` | Daily snapshots to keep |
@@ -44,13 +43,13 @@ docker compose up -d
 
 ```bash
 # List snapshots
-docker exec portainer-backup restic snapshots
+docker exec portainer-backup restic snapshots --insecure-no-password
 
 # Restore latest backup
-docker exec portainer-backup restic restore latest --target /tmp/restore
+docker exec portainer-backup restic restore latest --target /tmp/restore --insecure-no-password
 
 # Check repository
-docker exec portainer-backup restic check
+docker exec portainer-backup restic check --insecure-no-password
 ```
 
 ## Logs
@@ -60,5 +59,10 @@ docker exec portainer-backup restic check
 docker logs portainer-backup
 
 # View backup history from restic
-docker exec portainer-backup restic snapshots
+docker exec portainer-backup restic snapshots --insecure-no-password
 ```
+
+## Notes
+
+- No password is used for the restic repository (local RAID1 storage)
+- All `restic` commands require `--insecure-no-password` flag

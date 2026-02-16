@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-# Backup Portainer to restic repository
+# Backup Portainer to restic repository (no password, local storage only)
 # Runs inside sidecar container
 
 log() {
@@ -14,23 +14,10 @@ if [ -z "$PORTAINER_API_KEY" ]; then
   exit 1
 fi
 
-if [ -z "$RESTIC_PASSWORD" ]; then
-  log "ERROR: RESTIC_PASSWORD must be set"
-  exit 1
-fi
-
-# Init restic repo if needed
-# Check for config file existence to distinguish "repo missing" from "auth error"
-if [ -e "$RESTIC_REPOSITORY/config" ]; then
-  # Repo exists - verify we can access it
-  if ! restic snapshots >/dev/null 2>&1; then
-    log "ERROR: Failed to access existing restic repository at $RESTIC_REPOSITORY. Check RESTIC_PASSWORD."
-    exit 1
-  fi
-else
-  # Repo doesn't exist - initialize it
+# Init restic repo if needed (no password for local RAID1 storage)
+if ! restic snapshots --insecure-no-password >/dev/null 2>&1; then
   log "Initializing restic repository at $RESTIC_REPOSITORY"
-  restic init
+  restic init --insecure-no-password
 fi
 
 log "Starting Portainer backup"
@@ -57,9 +44,9 @@ if [ ! -s "$TEMP_FILE" ]; then
   exit 1
 fi
 
-# Backup to restic with explicit filename
+# Backup to restic (no password)
 log "Storing backup in restic"
-if restic backup "$TEMP_FILE" --tag portainer --host portainer; then
+if restic backup "$TEMP_FILE" --tag portainer --host portainer --insecure-no-password; then
   log "Backup completed successfully"
 else
   log "ERROR: Restic backup failed"
@@ -74,6 +61,7 @@ restic forget --tag portainer \
   --keep-daily "$KEEP_DAILY" \
   --keep-weekly "$KEEP_WEEKLY" \
   --keep-monthly "$KEEP_MONTHLY" \
-  --prune
+  --prune \
+  --insecure-no-password
 
 log "Backup and cleanup completed"
