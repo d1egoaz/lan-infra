@@ -30,6 +30,7 @@ services:
       dockerfile: backup.Dockerfile
     container_name: portainer-backup
     restart: unless-stopped
+    init: true  # Proper init for signal handling
     environment:
       PORTAINER_API_KEY: ${PORTAINER_API_KEY}
       PORTAINER_API_URL: ${PORTAINER_API_URL:-http://portainer:9000/api}

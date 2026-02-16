@@ -3,7 +3,6 @@ FROM alpine:3.21
 RUN apk add --no-cache \
     restic \
     curl \
-    dcron \
     tzdata
 
 COPY backup.sh /usr/local/bin/
