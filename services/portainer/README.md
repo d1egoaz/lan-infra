@@ -56,12 +56,23 @@ docker compose up -d
 FIRST_RUN=true docker compose up backup
 ```
 
+### Permissions
+
+Ensure the host directory `/srv/data/backups/portainer` is writable by the container's `backup` user (UID 1000). If permissions are incorrect, adjust with:
+
+```bash
+sudo chown -R 1000:1000 /srv/data/backups/portainer
+```
+
+
+
 ## Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORTAINER_API_KEY` | *required* | From Portainer UI → My Account → API access |
 | `PORTAINER_URL` | `https://portainer:9443` | Internal Docker network URL |
+| `SSL_VERIFY` | `false` | Enable SSL certificate verification (set to `true` to verify) |
 | `BACKUP_SCHEDULE` | `0 3 * * *` | Cron expression (3 AM daily) |
 | `TZ` | `America/Vancouver` | Timezone |
 | `FIRST_RUN` | `false` | Run once immediately on start |

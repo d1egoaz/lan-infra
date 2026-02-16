@@ -12,6 +12,13 @@ PORTAINER_URL="${PORTAINER_URL:-https://portainer:9443}"
 API_KEY="${PORTAINER_API_KEY:-}"
 LOG_FILE="${BACKUP_DIR}/backup.log"
 
+# SSL verification (default: false, use -k for self-signed certs)
+SSL_VERIFY="${SSL_VERIFY:-false}"
+CURL_SSL_OPTS=""
+if [[ "$SSL_VERIFY" != "true" ]]; then
+    CURL_SSL_OPTS="-k"
+fi
+
 # Retention (days)
 RETENTION_DAILY="${RETENTION_DAILY:-7}"
 RETENTION_WEEKLY="${RETENTION_WEEKLY:-28}"    # 4 weeks
@@ -74,7 +81,7 @@ create_backup() {
     log "Creating backup via Portainer API..."
 
     local http_code
-    http_code=$(curl -s -k -o "$tmpfile" -w "%{http_code}" \
+    http_code=$(curl -s ${CURL_SSL_OPTS} -o "$tmpfile" -w "%{http_code}" \
         --max-time 300 \
         -X POST "${PORTAINER_URL}/api/backup" \
         -H "X-API-Key: ${API_KEY}" \
@@ -129,12 +136,13 @@ cleanup_by_age() {
 main() {
     log "=== Portainer Backup Started ==="
     # Lock to prevent concurrent runs
-    LOCK_DIR="/.lock"
-    if ! mkdir "" 2>/dev/null; then
+    LOCK_DIR="${BACKUP_DIR}/.lock"
+    mkdir -p "$LOCK_DIR" || fatal "Cannot create lock dir"
+    if ! mkdir "${LOCK_DIR}/backup.lock" 2>/dev/null; then
         log "Another backup is already running (lock exists). Exiting."
         exit 0
     fi
-    trap "rmdir "" 2>/dev/null" EXIT
+    trap 'rmdir "${LOCK_DIR}/backup.lock" 2>/dev/null; rmdir "$LOCK_DIR" 2>/dev/null 2>&1' EXIT
 
     validate
 

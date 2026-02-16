@@ -26,6 +26,7 @@ log "Retention: ${RETENTION_DAILY}d/${RETENTION_WEEKLY}w/${RETENTION_MONTHLY}m"
     echo "BACKUP_DIR=$BACKUP_DIR"
     echo "PORTAINER_URL=$PORTAINER_URL"
     echo "PORTAINER_API_KEY=$PORTAINER_API_KEY"
+    echo "SSL_VERIFY=${SSL_VERIFY:-false}"
     echo "RETENTION_DAILY=${RETENTION_DAILY:-7}"
     echo "RETENTION_WEEKLY=${RETENTION_WEEKLY:-28}"
     echo "RETENTION_MONTHLY=${RETENTION_MONTHLY:-90}"
@@ -43,4 +44,4 @@ if [[ "${FIRST_RUN:-false}" == "true" ]]; then
 fi
 
 log "Starting cron daemon..."
-exec crond -f -d 6
+exec crond -f -d 0

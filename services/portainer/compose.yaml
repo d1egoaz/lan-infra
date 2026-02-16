@@ -22,6 +22,7 @@ services:
     environment:
       PORTAINER_URL: ${PORTAINER_URL:-https://portainer:9443}
       PORTAINER_API_KEY: ${PORTAINER_API_KEY:?required}
+      SSL_VERIFY: ${SSL_VERIFY:-false}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 3 * * *}
       TZ: ${TZ:-America/Vancouver}
       FIRST_RUN: ${FIRST_RUN:-false}
