@@ -23,3 +23,22 @@ services:
     networks:
       - app_network
       - cloudflared
+
+  backup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portainer-backup
+    restart: unless-stopped
+    environment:
+      - PORTAINER_URL=${PORTAINER_URL:-https://portainer:9443}
+      - PORTAINER_API_KEY=${PORTAINER_API_KEY:?PORTAINER_API_KEY required}
+      - BACKUP_HOUR=${BACKUP_HOUR:-3}
+      - BACKUP_MINUTE=${BACKUP_MINUTE:-0}
+      - TZ=${TZ:-America/Vancouver}
+    volumes:
+      - /srv/data/backups/portainer:/backups
+    networks:
+      - app_network
+    depends_on:
+      - portainer
