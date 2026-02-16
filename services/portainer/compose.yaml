@@ -32,6 +32,7 @@ services:
       # Optional hooks for notifications
       PRE_BACKUP_HOOK: ${PRE_BACKUP_HOOK:-}
       POST_BACKUP_HOOK: ${POST_BACKUP_HOOK:-}
+      BACKUP_DIR: /backups
     volumes:
       - /srv/data/backups/portainer:/backups
     networks:

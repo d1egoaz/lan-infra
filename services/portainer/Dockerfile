@@ -1,6 +1,6 @@
 FROM alpine:3.21
 
-RUN apk add --no-cache curl tzdata findutils util-linux coreutils bash
+RUN apk add --no-cache curl tzdata findutils util-linux coreutils bash dcron vim procps
 
 # Create backup user (non-root)
 RUN adduser -D -s /bin/sh backup && \

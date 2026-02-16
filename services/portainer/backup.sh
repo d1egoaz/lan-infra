@@ -46,10 +46,6 @@ validate() {
     mkdir -p "$BACKUP_DIR" || fatal "Cannot create $BACKUP_DIR"
     touch "$LOG_FILE" 2>/dev/null || fatal "Cannot write to $LOG_FILE"
 
-    # Check disk space (need at least 500MB free)
-    local avail_kb
-    avail_kb=$(df -k "$BACKUP_DIR" | awk 'NR==2 {print $4}')
-    (( avail_kb < 512000 )) && log "WARN: Low disk space (${avail_kb}KB available)"
 }
 
 # ===== BACKUP TYPE DETERMINATION =====
@@ -117,7 +113,7 @@ cleanup_by_age() {
     local count_before count_after
     count_before=$(find "$BACKUP_DIR" -name "$pattern" -type f 2>/dev/null | wc -l)
 
-    find "$BACKUP_DIR" -name "$pattern" -type f -mtime "+${max_age_days}" -print0 2>/dev/null | \
+    find "$BACKUP_DIR" -name "$pattern" -type f -mtime "+$((max_age_days - 1))" -print0 2>/dev/null | \
         while IFS= read -r -d '' file; do
             log "Pruning old $type_name: $(basename "$file")"
             rm -f "$file"
@@ -132,13 +128,20 @@ cleanup_by_age() {
 
 main() {
     log "=== Portainer Backup Started ==="
+    # Lock to prevent concurrent runs
+    LOCK_DIR="/.lock"
+    if ! mkdir "" 2>/dev/null; then
+        log "Another backup is already running (lock exists). Exiting."
+        exit 0
+    fi
+    trap "rmdir "" 2>/dev/null" EXIT
 
     validate
 
     # Pre-backup hook
     if [[ -n "$PRE_BACKUP_HOOK" ]]; then
         log "Running pre-backup hook..."
-        eval "$PRE_BACKUP_HOOK" || log "Pre-backup hook failed (continuing)"
+        sh -c "$PRE_BACKUP_HOOK" || log "Pre-backup hook failed (continuing)"
     fi
 
     local btype
@@ -169,7 +172,7 @@ main() {
     # Post-backup hook
     if [[ -n "$POST_BACKUP_HOOK" ]]; then
         log "Running post-backup hook..."
-        eval "$POST_BACKUP_HOOK" || log "Post-backup hook failed"
+        sh -c "$POST_BACKUP_HOOK" || log "Post-backup hook failed"
     fi
 
     # JSON output for monitoring

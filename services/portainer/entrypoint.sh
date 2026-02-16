@@ -6,6 +6,7 @@
 set -euo pipefail
 
 SCHEDULE="${BACKUP_SCHEDULE:-0 3 * * *}"
+BACKUP_DIR="${BACKUP_DIR:-/backups}"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
@@ -30,7 +31,7 @@ log "Retention: ${RETENTION_DAILY}d/${RETENTION_WEEKLY}w/${RETENTION_MONTHLY}m"
     echo "RETENTION_MONTHLY=${RETENTION_MONTHLY:-90}"
     echo "PRE_BACKUP_HOOK=${PRE_BACKUP_HOOK:-}"
     echo "POST_BACKUP_HOOK=${POST_BACKUP_HOOK:-}"
-    echo "$SCHEDULE /scripts/backup.sh >> /backups/backup.log 2>&1"
+    echo "$SCHEDULE /scripts/backup.sh >> $BACKUP_DIR/backup.log 2>&1"
 } | crontab -
 
 log "Cron schedule installed"
