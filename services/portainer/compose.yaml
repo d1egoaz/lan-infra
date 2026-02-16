@@ -8,6 +8,9 @@ volumes:
   portainer_data:
     external: true
     name: portainer_data
+  portainer_backups:
+    external: true
+    name: portainer_backups
 
 services:
   portainer:
@@ -23,3 +26,27 @@ services:
     networks:
       - app_network
       - cloudflared
+
+  backup:
+    build:
+      context: .
+      dockerfile: backup.Dockerfile
+    container_name: portainer-backup
+    restart: unless-stopped
+    environment:
+      PORTAINER_API_URL: ${PORTAINER_API_URL:-http://portainer:9000/api}
+      PORTAINER_USERNAME: ${PORTAINER_USERNAME}
+      PORTAINER_PASSWORD: ${PORTAINER_PASSWORD}
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-/backups}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 3 * * *}
+      KEEP_DAILY: ${KEEP_DAILY:-7}
+      KEEP_WEEKLY: ${KEEP_WEEKLY:-4}
+      KEEP_MONTHLY: ${KEEP_MONTHLY:-3}
+      TZ: ${TZ:-America/Vancouver}
+    volumes:
+      - portainer_backups:/backups
+    networks:
+      - app_network
+    depends_on:
+      - portainer
