@@ -134,7 +134,7 @@ POST_BACKUP_HOOK='curl -s -d "Portainer backup: $(date +%H:%M) completed" https:
 | Path | Description |
 |------|-------------|
 | `/srv/data/backups/portainer/` | NAS mount (RAID 1) |
-| `/srv/data/backups/portainer/backup.log` | Rotation log |
+| `/srv/data/backups/portainer/backup.log` | Backup operation log |
 | `/srv/data/backups/portainer/portainer_*.tar.gz` | Backup archives |
 
 ## Troubleshooting

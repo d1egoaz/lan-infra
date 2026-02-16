@@ -50,8 +50,6 @@ EOF
 
 validate() {
     [[ -z "$API_KEY" ]] && fatal "PORTAINER_API_KEY not set"
-    mkdir -p "$BACKUP_DIR" || fatal "Cannot create $BACKUP_DIR"
-    touch "$LOG_FILE" 2>/dev/null || fatal "Cannot write to $LOG_FILE"
 
     # Check disk space (need at least 500MB free)
     local avail_kb
@@ -86,13 +84,20 @@ create_backup() {
 
     log "Creating backup via Portainer API..."
 
-    local http_code
+    local http_code curl_exit
+    # Capture HTTP code, but also capture curl exit code for network errors
     http_code=$(curl -s ${CURL_SSL_OPTS} -o "$tmpfile" -w "%{http_code}" \
         --max-time 300 \
         -X POST "${PORTAINER_URL}/api/backup" \
         -H "X-API-Key: ${API_KEY}" \
         -H "Content-Type: application/json" \
         -d '{"password":""}')
+    curl_exit=$?
+
+    if [[ "$curl_exit" -ne 0 ]]; then
+        rm -f "$tmpfile"
+        fatal "curl failed with exit code ${curl_exit} (Network/Connection error)"
+    fi
 
     if [[ "$http_code" != "200" ]]; then
         rm -f "$tmpfile"
@@ -124,7 +129,8 @@ cleanup_by_age() {
     local count_before count_after
     count_before=$(find "$BACKUP_DIR" -name "$pattern" -type f 2>/dev/null | wc -l)
 
-    find "$BACKUP_DIR" -name "$pattern" -type f -mtime "+$((max_age_days - 1))" -print0 2>/dev/null | \
+    # Fix: Use +$max_age_days to delete files strictly older than retention period
+    find "$BACKUP_DIR" -name "$pattern" -type f -mtime "+$max_age_days" -print0 2>/dev/null | \
         while IFS= read -r -d '' file; do
             log "Pruning old $type_name: $(basename "$file")"
             rm -f "$file"
@@ -138,7 +144,18 @@ cleanup_by_age() {
 # ===== MAIN =====
 
 main() {
+    # Pre-flight check: Ensure we can write logs before attempting to log
+    if ! mkdir -p "$BACKUP_DIR" 2>/dev/null; then
+        echo "FATAL: Cannot create or access backup dir '$BACKUP_DIR'" >&2
+        exit 1
+    fi
+    if ! touch "$LOG_FILE" 2>/dev/null; then
+        echo "FATAL: Cannot write to log file '$LOG_FILE'" >&2
+        exit 1
+    fi
+
     log "=== Portainer Backup Started ==="
+
     # Lock to prevent concurrent runs
     LOCK_DIR="${BACKUP_DIR}/.lock"
     mkdir -p "$LOCK_DIR" || fatal "Cannot create lock dir"
@@ -146,7 +163,8 @@ main() {
         log "Another backup is already running (lock exists). Exiting."
         exit 0
     fi
-    trap 'rmdir "${LOCK_DIR}/backup.lock" 2>/dev/null; rmdir "$LOCK_DIR" 2>/dev/null 2>&1' EXIT
+    # Fix: Correct redirection syntax to silence errors properly
+    trap 'rmdir "${LOCK_DIR}/backup.lock" 2>/dev/null; rmdir "$LOCK_DIR" >/dev/null 2>&1' EXIT
 
     validate
 

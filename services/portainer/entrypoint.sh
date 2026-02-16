@@ -32,7 +32,9 @@ log "Retention: ${RETENTION_DAILY}d/${RETENTION_WEEKLY}w/${RETENTION_MONTHLY}m"
     echo "RETENTION_MONTHLY=${RETENTION_MONTHLY:-90}"
     echo "PRE_BACKUP_HOOK=${PRE_BACKUP_HOOK:-}"
     echo "POST_BACKUP_HOOK=${POST_BACKUP_HOOK:-}"
-    echo "$SCHEDULE /scripts/backup.sh >> $BACKUP_DIR/backup.log 2>&1"
+    # Fix: Removed redirection to prevent double logging.
+    # The script handles its own logging via tee.
+    echo "$SCHEDULE /scripts/backup.sh"
 } | crontab -
 
 log "Cron schedule installed"
