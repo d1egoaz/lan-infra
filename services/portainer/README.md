@@ -1,134 +1,76 @@
-# Portainer Backup with Restic
+# Portainer Backup
 
-Simple, deduplicated backups of Portainer using the official API and Restic.
+Simple sidecar container that backs up Portainer to a restic repository on a schedule.
 
-## Why This Approach?
+## How It Works
 
-- **Simple** – One container, one script, no complex retention logic
-- **Deduplicated** – Restic handles deduplication across backups
-- **Encrypted** – All backups are encrypted at rest
-- **Flexible storage** – Use local filesystem, S3, B2, or any Restic backend
-- **Built‑in retention** – Restic's `forget` policy keeps daily/weekly/monthly snapshots
-- **No side‑effects** – Backups are streamed directly to Restic, no intermediate files
+- Sidecar container runs alongside Portainer
+- Uses `dcron` to run backups on a schedule (default: daily at 3am)
+- Downloads backup via Portainer API (user/password auth)
+- Stores in restic repository with deduplication and encryption
+- Automatically applies retention policy after each backup
 
-## Architecture
+## Setup
 
-```
-┌─────────────────┐     ┌─────────────────────────┐     ┌─────────────────┐
-│   Portainer EE  │     │  Restic Backup Container│     │  Restic Repo    │
-│   (portainer:9443)◄────┤  (cron + curl + restic) ├────►│  (local/S3/B2) │
-│                 │     │                         │     │                 │
-└─────────────────┘     └─────────────────────────┘     └─────────────────┘
-```
+1. Copy `.env.example` to `.env` and configure:
 
-## Quick Start
-
-1. **Configure environment**
-   ```bash
-   cd services/portainer
-   cp .env.example .env
-   # Edit .env and set at least:
-   #   PORTAINER_API_KEY (from Portainer UI → My Account → API access)
-   #   RESTIC_REPOSITORY (e.g., /backups for local, or S3/B2 URL)
-   #   RESTIC_PASSWORD   (choose a strong password)
-   ```
-
-2. **Create external volume (if using local repository)**
-   ```bash
-   docker volume create portainer_backups
-   ```
-
-3. **Deploy**
-   ```bash
-   docker compose up -d portainer-backup
-   ```
-
-4. **Test (run backup immediately)**
-   ```bash
-   FIRST_RUN=true docker compose up portainer-backup
-   ```
-
-## Authentication
-
-You can authenticate either with an API key (recommended) or with username/password.
-
-**API Key** (preferred):
-- Generate in Portainer UI: **My Account → API access**
-- Set `PORTAINER_API_KEY` in `.env`
-
-**Username/Password**:
-- Set `PORTAINER_USERNAME` and `PORTAINER_PASSWORD` in `.env`
-
-## Restic Repository
-
-Restic supports many backends. The container expects `RESTIC_REPOSITORY` and `RESTIC_PASSWORD` to be set.
-
-**Local filesystem** (default):
-```
-RESTIC_REPOSITORY=/backups
-```
-Mount a volume to `/backups` (see `compose.yaml`).
-
-**S3**:
-```
-RESTIC_REPOSITORY=s3:s3.amazonaws.com/bucket-name
-```
-Set additional environment variables for AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`).
-
-**Backblaze B2**:
-```
-RESTIC_REPOSITORY=b2:bucket-name:path
-```
-Set `B2_ACCOUNT_ID` and `B2_ACCOUNT_KEY`.
-
-See [Restic documentation](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html) for other backends.
-
-## Retention
-
-By default, the backup keeps:
-- **7** daily snapshots
-- **4** weekly snapshots  
-- **3** monthly snapshots
-
-Adjust with `RESTIC_KEEP_DAILY`, `RESTIC_KEEP_WEEKLY`, `RESTIC_KEEP_MONTHLY`.
-
-Retention is applied after each successful backup.
-
-## Manual Backup
-
-Run the backup script manually inside the container:
 ```bash
-docker exec portainer-backup backup-restic.sh
+cp .env.example .env
+# Edit .env with your credentials
 ```
 
-## Restore
+2. Ensure backup volume exists:
 
-1. List available snapshots:
-   ```bash
-   docker exec portainer-backup restic snapshots --tag portainer
-   ```
+```bash
+docker volume create portainer_backups
+```
 
-2. Restore a snapshot to a local directory:
-   ```bash
-   docker exec portainer-backup restic restore latest --target /tmp/restore --tag portainer
-   ```
+3. Deploy:
 
-3. Use the restored `.tar.gz` file in Portainer UI: **Settings → Backup & Restore → Restore from file**.
+```bash
+docker compose up -d
+```
 
-## Monitoring
+## Configuration
 
-The container logs to stdout (view with `docker logs portainer-backup`). Each backup run logs start/end times and any errors.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORTAINER_API_URL` | `http://portainer:9000/api` | Portainer API endpoint |
+| `PORTAINER_USERNAME` | - | Portainer admin username |
+| `PORTAINER_PASSWORD` | - | Portainer admin password |
+| `RESTIC_REPOSITORY` | `/backups` | Restic repo path (in container) |
+| `RESTIC_PASSWORD` | - | Restic encryption password |
+| `BACKUP_SCHEDULE` | `0 3 * * *` | Cron schedule for backups |
+| `KEEP_DAILY` | `7` | Daily snapshots to keep |
+| `KEEP_WEEKLY` | `4` | Weekly snapshots to keep |
+| `KEEP_MONTHLY` | `3` | Monthly snapshots to keep |
 
-## Troubleshooting
+## Viewing Backups
 
-**Permission denied on /backups**  
-Ensure the external volume exists (`docker volume create portainer_backups`).
+```bash
+# List snapshots
+docker exec portainer-backup restic snapshots
 
-**Restic repository not initialized**  
-The container will auto‑initialize the repository on first run if it doesn't exist.
+# Restore latest backup
+docker exec portainer-backup restic restore latest --target /tmp/restore
 
-**Authentication failures**  
-Check that your API key or username/password are correct and that the container can reach `PORTAINER_URL`.
+# Check repository
+docker exec portainer-backup restic check
+```
 
-**Backup fails with curl error**  
-Verify Portainer is running and accessible from the backup container (`docker compose exec portainer-backup curl -k $PORTAINER_URL/api/status`).
+## Logs
+
+```bash
+# View backup logs
+docker logs portainer-backup
+
+# View cron logs
+docker exec portainer-backup cat /var/log/cron.log
+```
+
+## Files
+
+- `backup.Dockerfile` - Alpine-based image with restic, curl, jq, cron
+- `backup.sh` - Performs the backup (auth → download → restic → retention)
+- `entrypoint.sh` - Sets up cron and runs initial backup
+- `compose.yaml` - Service definition
