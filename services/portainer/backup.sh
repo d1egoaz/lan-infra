@@ -53,6 +53,12 @@ validate() {
     mkdir -p "$BACKUP_DIR" || fatal "Cannot create $BACKUP_DIR"
     touch "$LOG_FILE" 2>/dev/null || fatal "Cannot write to $LOG_FILE"
 
+    # Check disk space (need at least 500MB free)
+    local avail_kb
+    avail_kb=$(df -k "$BACKUP_DIR" | awk 'NR==2 {print $4}')
+    if (( avail_kb < 512000 )); then
+        fatal "Low disk space (${avail_kb}KB available; minimum 512000KB required) in $BACKUP_DIR"
+    fi
 }
 
 # ===== BACKUP TYPE DETERMINATION =====
@@ -93,12 +99,10 @@ create_backup() {
         fatal "API returned HTTP $http_code"
     fi
 
-    # Verify gzip magic (1f8b)
-    local magic
-    magic=$(xxd -l 2 -p "$tmpfile" 2>/dev/null || echo "")
-    if [[ "$magic" != "1f8b" ]]; then
+    # Verify gzip integrity
+    if ! gunzip -t "$tmpfile" 2>/dev/null; then
         rm -f "$tmpfile"
-        fatal "Downloaded file is not a valid gzip archive (magic: $magic)"
+        fatal "Downloaded file is not a valid gzip archive"
     fi
 
     # Atomic move
