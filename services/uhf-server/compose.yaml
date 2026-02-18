@@ -8,7 +8,7 @@ volumes:
 
 services:
   uhf-server:
-    image: swapplications/uhf-server:1.5.1@sha256:52bc9facf992b74d87da311a94c803a2a73acbd3515d3327db2249d1d5ad69ed
+    image: swapplications/uhf-server:1.6.0@sha256:01e9fc1fc2725e8f10973cb8aa06638e9c82dcb64e4d5ae01b58f7651fe1e3ba
     container_name: uhf-server
     ports:
       - 63890:63890
