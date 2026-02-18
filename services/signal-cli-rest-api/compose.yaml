@@ -5,16 +5,33 @@ networks:
 volumes:
   signal-cli-config:
     name: signal-cli-rest
+  signal-cli-jsonrpc-config:
+    name: signal-cli-jsonrpc
 
 services:
   signal-cli-rest-api:
     image: bbernhard/signal-cli-rest-api:0.97@sha256:5fcb8e8620f20f944d747627841ca97f19104acb3e1adb1d5c8983b5db422529
     restart: unless-stopped
-    environment:
-      MODE: json-rpc # supported: json-rpc, native, normal
-    ports:
-      - "7583:8080"
     volumes:
       - signal-cli-config:/home/.local/share/signal-cli
     networks:
-      - app_network
+      app_network:
+        aliases:
+          - signal-rest
+    expose:
+      - "8080"
+
+  signal-cli-jsonrpc:
+    image: registry.gitlab.com/packaging/signal-cli/signal-cli-jre:v0-13-24-1@sha256:dff0a8c7068683c9904183e4cf04f4cfbcf5eaf558b74091ceab886e67a1ff40
+    command: daemon --http 0.0.0.0:7583
+    restart: unless-stopped
+    volumes:
+      - signal-cli-jsonrpc-config:/var/lib/signal-cli
+    tmpfs:
+      - "/tmp:exec"
+    networks:
+      app_network:
+        aliases:
+          - signal-rpc
+    expose:
+      - "7583"
