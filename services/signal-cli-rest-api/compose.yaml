@@ -1,6 +1,8 @@
 networks:
   app_network:
     external: true
+  ha_signal_private:
+    external: true
 
 volumes:
   signal-cli-config:
@@ -18,6 +20,9 @@ services:
       app_network:
         aliases:
           - signal-rest
+      ha_signal_private:
+        aliases:
+          - signal-rest
     expose:
       - "8080"
 
@@ -30,7 +35,7 @@ services:
     tmpfs:
       - "/tmp:exec"
     networks:
-      app_network:
+      ha_signal_private:
         aliases:
           - signal-rpc
     expose:
