@@ -13,9 +13,6 @@ networks:
     external: true
   app_network:
     external: true
-  ha_signal_private:
-    name: ha_signal_private
-    internal: true
 
 services:
   homeassistant:
@@ -28,13 +25,10 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Vancouver
+        # not used when network mode is host ports:
+        #- 8095:8095
     privileged: true
-    ports:
-      - "8123:8123"
-    networks:
-      - homeassistant
-      - app_network
-      - ha_signal_private
+    network_mode: host
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
