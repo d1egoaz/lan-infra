@@ -1,5 +1,5 @@
 networks:
-  app_network:
+  ha_signal_private:
     external: true
 
 volumes:
@@ -15,7 +15,7 @@ services:
     volumes:
       - signal-cli-config:/home/.local/share/signal-cli
     networks:
-      app_network:
+      ha_signal_private:
         aliases:
           - signal-rest
     expose:
@@ -30,7 +30,7 @@ services:
     tmpfs:
       - "/tmp:exec"
     networks:
-      app_network:
+      ha_signal_private:
         aliases:
           - signal-rpc
     expose:
