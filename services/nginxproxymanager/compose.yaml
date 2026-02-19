@@ -1,6 +1,8 @@
 networks:
   app_network:
     external: true
+  ha_signal_private:
+    external: true
 
 volumes:
   nginxproxymanager-data:
@@ -20,6 +22,7 @@ services:
       - nginxproxymanager-data:/etc/letsencrypt
     networks:
       - app_network
+      - ha_signal_private
     healthcheck:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
