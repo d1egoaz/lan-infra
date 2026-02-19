@@ -1,6 +1,7 @@
 networks:
   ha_signal_private:
     external: true
+  signal_egress:
 
 volumes:
   signal-cli-config:
@@ -18,6 +19,7 @@ services:
       ha_signal_private:
         aliases:
           - signal-rest
+      signal_egress:
     expose:
       - "8080"
 
@@ -33,5 +35,6 @@ services:
       ha_signal_private:
         aliases:
           - signal-rpc
+      signal_egress:
     expose:
       - "7583"
