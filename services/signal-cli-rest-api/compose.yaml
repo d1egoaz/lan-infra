@@ -1,5 +1,5 @@
 networks:
-  app_network:
+  ha_signal_private:
     external: true
 
 volumes:
@@ -14,10 +14,8 @@ services:
     restart: unless-stopped
     volumes:
       - signal-cli-config:/home/.local/share/signal-cli
-    ports:
-      - "127.0.0.1:17583:8080"
     networks:
-      app_network:
+      ha_signal_private:
         aliases:
           - signal-rest
     expose:
@@ -32,7 +30,7 @@ services:
     tmpfs:
       - "/tmp:exec"
     networks:
-      app_network:
+      ha_signal_private:
         aliases:
           - signal-rpc
     expose:
