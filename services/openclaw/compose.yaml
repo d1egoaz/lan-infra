@@ -20,7 +20,6 @@ services:
       - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
     volumes:
       - openclaw_state:/home/node/.openclaw
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
     networks:
       ha_signal_private:
         aliases:
@@ -43,7 +42,6 @@ services:
       TZ: ${TZ:-America/Vancouver}
     volumes:
       - openclaw_state:/home/node/.openclaw
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
     networks:
       - ha_signal_private
       - signal_egress
