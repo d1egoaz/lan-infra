@@ -12,7 +12,20 @@ This stack runs OpenClaw with config stored in the `openclaw_state` volume. Git 
 
 1. Deploy this folder as a Portainer stack (recommended: from Git).
 2. In Stack environment variables, define required keys from `.env.example`:
+   - `GITHUB_TOKEN`
+   - `HA_TOKEN`
+   - `HA_UI_PASS`
+   - `HA_UI_USER`
+   - `HA_URL`
+   - `OPENAI_API_KEY`
+   - `OPENAI_BASE_URL`
    - `OPENCLAW_GATEWAY_PORT` (optional, default `18789`)
+   - `OPENCLAW_GATEWAY_TOKEN`
+   - `OPENCLAW_PERPLEXITY_API_KEY`
+   - `OPENCLAW_PERPLEXITY_MODEL`
+   - `OPENCLAW_SIGNAL_HTTP_URL`
+   - `PORTAINER_API_KEY`
+   - `PORTAINER_URL`
    - `TZ` (optional)
 3. Deploy services:
    - `openclaw-gateway`
