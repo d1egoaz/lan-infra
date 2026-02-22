@@ -1,23 +1,17 @@
 # OpenClaw Service
 
-This stack keeps OpenClaw config in git with `${VAR}` placeholders and expects private values from Portainer Stack environment variables.
+This stack runs OpenClaw with config stored in the `openclaw_state` volume. Git only keeps a template for later migration.
 
 ## Files
 
 - `compose.yaml`: OpenClaw gateway + Signal RPC sidecar
-- `config/openclaw.json`: git-tracked config with `${VAR}` placeholders
-- `.env.example`: variable reference for Portainer values
+- `config/openclaw.template.json`: template/TODO reference, not mounted by compose
+- `.env.example`: template variable reference for future config-in-git setup
 
 ## Portainer Setup
 
 1. Deploy this folder as a Portainer stack (recommended: from Git).
 2. In Stack environment variables, define required keys from `.env.example`:
-   - `OPENAI_BASE_URL`
-   - `OPENAI_API_KEY`
-   - `OPENCLAW_PERPLEXITY_API_KEY`
-   - `OPENCLAW_PERPLEXITY_MODEL`
-   - `OPENCLAW_SIGNAL_HTTP_URL`
-   - `OPENCLAW_GATEWAY_TOKEN`
    - `OPENCLAW_GATEWAY_PORT` (optional, default `18789`)
    - `TZ` (optional)
 3. Deploy services:
@@ -41,6 +35,8 @@ This stack keeps OpenClaw config in git with `${VAR}` placeholders and expects p
 4. Config `env` block in `~/.openclaw/openclaw.json` (applied only if missing).
 5. Optional login-shell import (`env.shellEnv.enabled` or `OPENCLAW_LOAD_SHELL_ENV=1`), applied only for missing expected keys.
 
+Note: these precedence rules apply once you provide an `openclaw.json` file inside the runtime state volume.
+
 ## Security Notes
 
 - `openclaw-gateway` is bound to loopback only: `127.0.0.1:${OPENCLAW_GATEWAY_PORT}`.
@@ -48,6 +44,15 @@ This stack keeps OpenClaw config in git with `${VAR}` placeholders and expects p
 - `cap_drop: [ALL]` and `no-new-privileges` are enabled for OpenClaw services.
 - Never commit real secrets in git.
 - OpenClaw image is pinned directly in `compose.yaml`, which lets Renovate update it in git.
+
+## Manual Config Flow (current)
+
+1. Deploy stack to create and persist `openclaw_state`.
+2. Copy your private `openclaw.json` into the volume at `/home/node/.openclaw/openclaw.json`.
+3. Redeploy/restart `openclaw-gateway`.
+
+Template file for later migration:
+- `services/openclaw/config/openclaw.template.json`
 
 ## Permissions Gotcha
 
