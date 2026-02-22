@@ -70,3 +70,13 @@ If you do not want `signal-rpc` to read OpenClaw media, comment out that line in
 - https://docs.openclaw.ai/install/docker
 - https://docs.openclaw.ai/channels/signal
 - https://docs.openclaw.ai/nodes
+
+## Troubleshooting
+
+If you see `EISDIR` for `~/.openclaw/openclaw.json`, a previous bind mount likely created a directory at that path in `openclaw_state`.
+
+One-time cleanup:
+
+```bash
+docker run --rm -v openclaw_state:/state alpine sh -lc 'rm -rf /state/openclaw.json'
+```

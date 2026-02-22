@@ -9,6 +9,10 @@ volumes:
   signal-cli-jsonrpc-config:
     name: signal-cli-jsonrpc
 
+configs:
+  openclaw_json:
+    file: ./config/openclaw.json
+
 services:
   openclaw-gateway:
     image: ghcr.io/openclaw/openclaw:2026.2.21@sha256:ce271192cd70250d16fc5911903d9953467a40faf8b34e87cbd042e6b49b6036
@@ -20,7 +24,10 @@ services:
       - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
     volumes:
       - openclaw_state:/home/node/.openclaw
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
+    configs:
+      - source: openclaw_json
+        target: /home/node/.openclaw/openclaw.json
+        mode: 0444
     networks:
       ha_signal_private:
         aliases:
@@ -43,7 +50,10 @@ services:
       TZ: ${TZ:-America/Vancouver}
     volumes:
       - openclaw_state:/home/node/.openclaw
-      - ./config/openclaw.json:/home/node/.openclaw/openclaw.json:ro
+    configs:
+      - source: openclaw_json
+        target: /home/node/.openclaw/openclaw.json
+        mode: 0444
     networks:
       - ha_signal_private
       - signal_egress
