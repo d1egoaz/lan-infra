@@ -1,1 +1,4 @@
 .env
+
+# signal-cli-rpc local Signal account state (private)
+services/signal-cli-rpc/config/
