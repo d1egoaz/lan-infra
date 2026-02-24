@@ -41,7 +41,7 @@ services:
       KEEP_MONTHLY: ${KEEP_MONTHLY:-3}
       TZ: ${TZ:-America/Vancouver}
     volumes:
-      - /srv/data/backups/portainer:/backups
+      - ${BACKUP_HOST_PATH:-/srv/data/backups/portainer}:/backups
     networks:
       - app_network
     depends_on:
