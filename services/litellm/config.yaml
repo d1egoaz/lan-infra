@@ -33,12 +33,6 @@ model_list:
   ################
   # local models #
   ################
-  - model_name: local/acon96/home-llama-3.2-3b
-    litellm_params:
-      model: openai/home-llama-3.2-3b
-      api_base: os.environ/LOCAL_API_BASE
-      api_key: none
-
   - model_name: local/mlx-community/meta-llama-3.1-8b-instruct
     litellm_params:
       model: openai/mlx-community/meta-llama-3.1-8b-instruct
@@ -56,33 +50,17 @@ model_list:
         - location: message
           role: system
 
-  # nano banana
-  - model_name: google/gemini-3-pro-image-preview
+  - model_name: google/gemini-3-flash
     litellm_params:
-      model: gemini/gemini-3-pro-image-preview
-      api_key: os.environ/GEMINI_API_KEY
-
-  - model_name: google/gemini-3-pro-preview
-    litellm_params:
-      model: gemini/gemini-3-pro-preview
-      api_key: os.environ/GEMINI_API_KEY
-      tools:
-        - googleSearch: {}
-      cache_control_injection_points:
-        - location: message
-          role: system
-
-  - model_name: google/gemini-2.0-flash
-    litellm_params:
-      model: gemini/gemini-2.0-flash
+      model: gemini/gemini-3-flash
       api_key: os.environ/GEMINI_API_KEY
       cache_control_injection_points:
         - location: message
           role: system
 
-  - model_name: google/gemini-2.0-flash-lite
+  - model_name: google/gemini-flash-lite-latest
     litellm_params:
-      model: gemini/gemini-2.0-flash-lite
+      model: gemini/gemini-flash-lite-latest
       api_key: os.environ/GEMINI_API_KEY
       cache_control_injection_points:
         - location: message
@@ -116,52 +94,15 @@ model_list:
       model: gemini/gemma-3-4b-it
       api_key: os.environ/GEMINI_API_KEY
 
-  - model_name: deepseek/deepseek-chat
+  - model_name: cerebras/llama3.1-8b
     litellm_params:
-      model: deepseek/deepseek-chat
-      api_key: os.environ/DEEPSEEK_API_KEY
+      model: cerebras/llama3.1-8b
+      api_key: os.environ/CEREBRAS_API_KEY
       cache_control_injection_points:
         - location: message
           role: system
-
-  - model_name: deepseek/deepseek-reasoner
-    litellm_params:
-      model: deepseek/deepseek-reasoner
-      api_key: os.environ/DEEPSEEK_API_KEY
-      cache_control_injection_points:
-        - location: message
-          role: system
-
-  - model_name: samba/meta-llama-3.3-70b-instruct
-    litellm_params:
-      model: sambanova/Meta-Llama-3.3-70B-Instruct
-      api_key: os.environ/SAMBANOVA_API_KEY
-      cache_control_injection_points:
-        - location: message
-          role: system
-    model_info:
-      context_window:
-        131072
-        #max_completion_tokens: 16384
-      max_tokens: 16384
-
-  - model_name: groq/meta-llama/llama-4-scout-17b-16e-instruct
-    litellm_params:
-      model: groq/meta-llama/llama-4-scout-17b-16e-instruct
-      api_key: os.environ/GROQ_API_KEY
-    model_info:
-      context_window: 131072
-      max_tokens: 8192
 
   - model_name: openrouter/qwen/qwen3-coder
     litellm_params:
       model: openrouter/qwen/qwen3-coder
       api_key: os.environ/OPENROUTER_API_KEY
-
-  - model_name: perplexity/searchpro
-    litellm_params:
-      model: perplexity/sonar-pro
-      api_key: os.environ/PERPLEXITYAI_API_KEY
-      allowed_openai_params: ["web_search_options"]
-      web_search_options:
-        search_context_size: "medium"
