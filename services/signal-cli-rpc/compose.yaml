@@ -1,13 +1,14 @@
 services:
   signal-cli-rpc:
     image: registry.gitlab.com/packaging/signal-cli/signal-cli-jre:v0-13-24-1@sha256:dff0a8c7068683c9904183e4cf04f4cfbcf5eaf558b74091ceab886e67a1ff40
+    container_name: ${SIGNAL_CONTAINER_NAME:-signal-cli-rpc}
     command: ["--config", "/var/lib/signal-cli", "daemon", "--http", "0.0.0.0:7583"]
     restart: unless-stopped
     ports:
-      - "127.0.0.1:17583:7583"
+      - "127.0.0.1:${SIGNAL_RPC_PORT:-17583}:7583"
     volumes:
-      - ./config:/var/lib/signal-cli
+      - ${SIGNAL_CONFIG_PATH:-./config}:/var/lib/signal-cli
       # Allow signal-cli to read OpenClaw-generated attachments by absolute host path.
-      - /Users/openclaw/.openclaw/media:/Users/openclaw/.openclaw/media:ro
+      - ${OPENCLAW_MEDIA_PATH:-/Users/openclaw/.openclaw/media}:/Users/openclaw/.openclaw/media:ro
     tmpfs:
       - "/tmp:exec"
