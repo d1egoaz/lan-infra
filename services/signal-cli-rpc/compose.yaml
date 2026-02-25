@@ -9,6 +9,6 @@ services:
     volumes:
       - ${SIGNAL_CONFIG_PATH:-./config}:/var/lib/signal-cli
       # Allow signal-cli to read OpenClaw-generated attachments by absolute host path.
-      - ${OPENCLAW_MEDIA_PATH:-/Users/openclaw/.openclaw/media}:/Users/openclaw/.openclaw/media:ro
+      - ${OPENCLAW_MEDIA_PATH:-/Users/your-user/.openclaw/media}:${OPENCLAW_MEDIA_PATH:-/Users/your-user/.openclaw/media}:ro
     tmpfs:
       - "/tmp:exec"
