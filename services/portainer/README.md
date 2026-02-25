@@ -2,7 +2,7 @@
 
 Simple sidecar container that backs up Portainer to a local restic repository on a schedule.
 
-Backups are stored on the host at `/srv/data/backups/portainer` (RAID1).
+Backups are stored on the host at `BACKUP_HOST_PATH` (default: `/srv/data/backups/portainer`).
 
 ## Setup
 
@@ -16,13 +16,19 @@ cp .env.example .env
 # Edit .env
 ```
 
-3. Ensure backup directory exists on host:
+3. Set your host backup path in `.env` (optional, defaults shown):
 
 ```bash
-mkdir -p /srv/data/backups/portainer
+BACKUP_HOST_PATH=/srv/data/backups/portainer
 ```
 
-4. Deploy:
+4. Ensure backup directory exists on host:
+
+```bash
+mkdir -p "$BACKUP_HOST_PATH"
+```
+
+5. Deploy:
 
 ```bash
 docker compose up -d
@@ -38,6 +44,7 @@ docker compose up -d
 | `KEEP_DAILY` | `7` | Daily snapshots to keep |
 | `KEEP_WEEKLY` | `4` | Weekly snapshots to keep |
 | `KEEP_MONTHLY` | `3` | Monthly snapshots to keep |
+| `BACKUP_HOST_PATH` | `/srv/data/backups/portainer` | Host path mounted to `/backups` inside the container |
 
 ## Viewing Backups
 
