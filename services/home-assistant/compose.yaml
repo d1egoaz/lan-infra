@@ -31,6 +31,10 @@ services:
     privileged: true
     ports:
       - "8123:8123"
+      # HomeKit bridge + accessory pairing ports (bridge mode)
+      - "21063-21084:21063-21084"
+      # mDNS for HomeKit discovery when HA is not using host networking
+      - "5353:5353/udp"
     networks:
       - homeassistant
       - app_network
