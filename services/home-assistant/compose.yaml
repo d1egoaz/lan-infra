@@ -42,6 +42,16 @@ services:
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
+  # mDNS reflector for HomeKit discovery when HA runs in bridge mode.
+  # Reflects multicast DNS between host interfaces/VLANs.
+  avahi-reflector:
+    image: flungo/avahi:latest@sha256:803451d0200610298d30d3151240f47c5de4d6558f6a3a36340692048cdf28e0
+    container_name: avahi-reflector
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - REFLECTOR_ENABLE_REFLECTOR=yes
+
   music-assistant-server:
     #image: ghcr.io/music-assistant/server:latest
     image: ghcr.io/music-assistant/server:beta@sha256:06b69a80fc1c1c3cd7ca8dc81a65d7487f725e8c1627517544b89849789dbafc
