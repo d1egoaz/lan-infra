@@ -8,7 +8,7 @@
   <rect x="60" y="125" width="240" height="52" rx="10" fill="#fff" stroke="#94A3B8"/>
   <text x="95" y="157" font-family="Arial" font-size="15">Remote users</text>
   <rect x="330" y="125" width="260" height="52" rx="10" fill="#fff" stroke="#94A3B8"/>
-  <text x="374" y="157" font-family="Arial" font-size="15">Internet / Cloudflare</text>
+  <text x="332" y="157" font-family="Arial" font-size="15">Internet (exposed via Cloudflare Tunnel)</text>
 
   <!-- DMZ -->
   <rect x="30" y="230" width="1140" height="180" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
@@ -45,8 +45,7 @@
   <!-- Links -->
   <g stroke="#334155" stroke-width="2" fill="none">
     <line x1="460" y1="177" x2="175" y2="285"/>
-    <line x1="460" y1="177" x2="450" y2="285"/>
-    <line x1="460" y1="177" x2="740" y2="285"/>
+    <line x1="175" y1="341" x2="450" y2="341"/>
     <line x1="450" y1="341" x2="170" y2="500"/>
     <line x1="450" y1="341" x2="400" y2="500"/>
     <line x1="1010" y1="341" x2="1010" y2="500"/>
