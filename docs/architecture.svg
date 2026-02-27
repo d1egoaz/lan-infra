@@ -1,79 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="1280" viewBox="0 0 980 1280">
-  <defs>
-    <style>
-      .title { font: 700 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; fill: #111827; }
-      .label { font: 600 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; fill: #111827; }
-      .node { font: 500 15px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; fill: #111827; }
-      .box { fill: #F8FAFC; stroke: #CBD5E1; stroke-width: 1.5; rx: 12; }
-      .group { fill: #FFFBEB; stroke: #F59E0B; stroke-width: 1.5; rx: 14; }
-      .arrow { stroke: #475569; stroke-width: 2; fill: none; marker-end: url(#m); }
-    </style>
-    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#475569" />
-    </marker>
-  </defs>
+  <rect x="0" y="0" width="980" height="1280" fill="#ffffff"/>
+  <text x="36" y="48" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#111827">lan-infra architecture (high-level)</text>
 
-  <text class="title" x="36" y="48">lan-infra architecture (high-level)</text>
+  <!-- Group boxes -->
+  <rect x="30" y="80" width="920" height="150" rx="14" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="50" y="112" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827">Clients</text>
 
-  <!-- Clients -->
-  <rect class="group" x="30" y="80" width="920" height="150" />
-  <text class="label" x="50" y="112">Clients</text>
-  <rect class="box" x="60" y="130" width="250" height="56" /><text class="node" x="88" y="164">iPhone / Apple Home</text>
-  <rect class="box" x="350" y="130" width="250" height="56" /><text class="node" x="396" y="164">Browsers / LAN clients</text>
-  <rect class="box" x="640" y="130" width="250" height="56" /><text class="node" x="710" y="164">Media clients</text>
+  <rect x="30" y="270" width="920" height="180" rx="14" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="50" y="302" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827">Edge &amp; Access</text>
 
-  <!-- Edge -->
-  <rect class="group" x="30" y="270" width="920" height="180" />
-  <text class="label" x="50" y="302">Edge & Access</text>
-  <rect class="box" x="60" y="330" width="250" height="70" /><text class="node" x="122" y="372">cloudflared</text>
-  <rect class="box" x="350" y="330" width="250" height="70" /><text class="node" x="395" y="372">nginx-proxy-manager</text>
-  <rect class="box" x="640" y="330" width="250" height="70" /><text class="node" x="669" y="372">tailscale-subnet-router</text>
+  <rect x="30" y="490" width="920" height="150" rx="14" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="50" y="522" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827">Control Plane</text>
 
-  <!-- Control -->
-  <rect class="group" x="30" y="490" width="920" height="150" />
-  <text class="label" x="50" y="522">Control Plane</text>
-  <rect class="box" x="60" y="540" width="380" height="60" /><text class="node" x="150" y="577">GitHub repo + PR workflow</text>
-  <rect class="box" x="510" y="540" width="380" height="60" /><text class="node" x="665" y="577">Portainer</text>
+  <rect x="30" y="680" width="920" height="230" rx="14" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="50" y="712" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827">Core Services</text>
 
-  <!-- Core -->
-  <rect class="group" x="30" y="680" width="920" height="230" />
-  <text class="label" x="50" y="712">Core Services</text>
-  <rect class="box" x="60" y="740" width="240" height="64" /><text class="node" x="113" y="779">Home Assistant</text>
-  <rect class="box" x="330" y="740" width="240" height="64" /><text class="node" x="395" y="779">avahi-reflector</text>
-  <rect class="box" x="600" y="740" width="140" height="64" /><text class="node" x="646" y="779">redis</text>
-  <rect class="box" x="760" y="740" width="160" height="64" /><text class="node" x="798" y="779">postgres</text>
-  <rect class="box" x="600" y="826" width="140" height="64" /><text class="node" x="631" y="865">mosquitto</text>
-  <rect class="box" x="760" y="826" width="160" height="64" /><text class="node" x="789" y="865">signal-cli-rpc</text>
+  <rect x="30" y="950" width="920" height="280" rx="14" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="50" y="982" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#111827">App Services (examples)</text>
 
-  <!-- Apps -->
-  <rect class="group" x="30" y="950" width="920" height="280" />
-  <text class="label" x="50" y="982">App Services (examples)</text>
-  <rect class="box" x="60" y="1015" width="160" height="56" /><text class="node" x="106" y="1048">openclaw</text>
-  <rect class="box" x="240" y="1015" width="160" height="56" /><text class="node" x="291" y="1048">nextcloud</text>
-  <rect class="box" x="420" y="1015" width="160" height="56" /><text class="node" x="458" y="1048">paperless-ngx</text>
-  <rect class="box" x="600" y="1015" width="160" height="56" /><text class="node" x="654" y="1048">immich</text>
-  <rect class="box" x="780" y="1015" width="160" height="56" /><text class="node" x="837" y="1048">plex</text>
+  <!-- Nodes -->
+  <rect x="60" y="130" width="250" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="88" y="164" font-family="Arial, sans-serif" font-size="15" fill="#111827">iPhone / Apple Home</text>
+  <rect x="350" y="130" width="250" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="396" y="164" font-family="Arial, sans-serif" font-size="15" fill="#111827">Browsers / LAN clients</text>
+  <rect x="640" y="130" width="250" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="710" y="164" font-family="Arial, sans-serif" font-size="15" fill="#111827">Media clients</text>
 
-  <rect class="box" x="240" y="1090" width="160" height="56" /><text class="node" x="269" y="1123">signal-cli-rest-api</text>
-  <rect class="box" x="420" y="1090" width="160" height="56" /><text class="node" x="469" y="1123">adguard</text>
+  <rect x="60" y="330" width="250" height="70" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="122" y="372" font-family="Arial, sans-serif" font-size="15" fill="#111827">cloudflared</text>
+  <rect x="350" y="330" width="250" height="70" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="395" y="372" font-family="Arial, sans-serif" font-size="15" fill="#111827">nginx-proxy-manager</text>
+  <rect x="640" y="330" width="250" height="70" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="669" y="372" font-family="Arial, sans-serif" font-size="15" fill="#111827">tailscale-subnet-router</text>
 
-  <!-- Arrows -->
-  <path class="arrow" d="M185,186 L185,330" />
-  <path class="arrow" d="M475,186 L475,330" />
-  <path class="arrow" d="M765,186 L765,330" />
+  <rect x="60" y="540" width="380" height="60" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="150" y="577" font-family="Arial, sans-serif" font-size="15" fill="#111827">GitHub repo + PR workflow</text>
+  <rect x="510" y="540" width="380" height="60" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="665" y="577" font-family="Arial, sans-serif" font-size="15" fill="#111827">Portainer</text>
 
-  <path class="arrow" d="M475,400 L700,540" />
-  <path class="arrow" d="M185,400 L700,540" />
-  <path class="arrow" d="M765,400 L700,540" />
+  <rect x="60" y="740" width="240" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="113" y="779" font-family="Arial, sans-serif" font-size="15" fill="#111827">Home Assistant</text>
+  <rect x="330" y="740" width="240" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="395" y="779" font-family="Arial, sans-serif" font-size="15" fill="#111827">avahi-reflector</text>
+  <rect x="600" y="740" width="140" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="646" y="779" font-family="Arial, sans-serif" font-size="15" fill="#111827">redis</text>
+  <rect x="760" y="740" width="160" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="798" y="779" font-family="Arial, sans-serif" font-size="15" fill="#111827">postgres</text>
+  <rect x="600" y="826" width="140" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="631" y="865" font-family="Arial, sans-serif" font-size="15" fill="#111827">mosquitto</text>
+  <rect x="760" y="826" width="160" height="64" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="789" y="865" font-family="Arial, sans-serif" font-size="15" fill="#111827">signal-cli-rpc</text>
 
-  <path class="arrow" d="M250,570 L510,570" />
-  <path class="arrow" d="M700,600 L180,740" />
-  <path class="arrow" d="M700,600 L450,740" />
+  <rect x="60" y="1015" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="106" y="1048" font-family="Arial, sans-serif" font-size="15" fill="#111827">openclaw</text>
+  <rect x="240" y="1015" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="291" y="1048" font-family="Arial, sans-serif" font-size="15" fill="#111827">nextcloud</text>
+  <rect x="420" y="1015" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="458" y="1048" font-family="Arial, sans-serif" font-size="15" fill="#111827">paperless-ngx</text>
+  <rect x="600" y="1015" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="654" y="1048" font-family="Arial, sans-serif" font-size="15" fill="#111827">immich</text>
+  <rect x="780" y="1015" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="837" y="1048" font-family="Arial, sans-serif" font-size="15" fill="#111827">plex</text>
+  <rect x="240" y="1090" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="269" y="1123" font-family="Arial, sans-serif" font-size="15" fill="#111827">signal-cli-rest-api</text>
+  <rect x="420" y="1090" width="160" height="56" rx="12" fill="#F8FAFC" stroke="#CBD5E1"/><text x="469" y="1123" font-family="Arial, sans-serif" font-size="15" fill="#111827">adguard</text>
 
-  <path class="arrow" d="M180,804 L180,1015" />
-  <path class="arrow" d="M700,804 L510,1015" />
-  <path class="arrow" d="M840,804 L320,1090" />
-  <path class="arrow" d="M680,890 L500,1090" />
+  <!-- Lines (no marker url usage) -->
+  <g stroke="#475569" stroke-width="2" fill="none">
+    <line x1="185" y1="186" x2="185" y2="330"/>
+    <line x1="475" y1="186" x2="475" y2="330"/>
+    <line x1="765" y1="186" x2="765" y2="330"/>
+    <line x1="475" y1="400" x2="700" y2="540"/>
+    <line x1="185" y1="400" x2="700" y2="540"/>
+    <line x1="765" y1="400" x2="700" y2="540"/>
+    <line x1="250" y1="570" x2="510" y2="570"/>
+    <line x1="700" y1="600" x2="180" y2="740"/>
+    <line x1="700" y1="600" x2="450" y2="740"/>
+    <line x1="180" y1="804" x2="180" y2="1015"/>
+    <line x1="700" y1="804" x2="510" y2="1015"/>
+    <line x1="840" y1="804" x2="320" y2="1090"/>
+    <line x1="680" y1="890" x2="500" y2="1090"/>
+  </g>
 
-  <text class="node" x="36" y="1260" fill="#334155">HomeKit bridge mode: HA published ports + avahi reflector + advertise_ip in HA config.</text>
+  <text x="36" y="1260" font-family="Arial, sans-serif" font-size="15" fill="#334155">HomeKit bridge mode: HA published ports + avahi reflector + advertise_ip in HA config.</text>
 </svg>
