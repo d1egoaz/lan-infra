@@ -36,7 +36,6 @@ flowchart TB
     HA[Home Assistant]
     Avahi[avahi-reflector]
     SignalREST[signal-cli-rest-api]
-    Ghost[ghost]
     Plex[plex]
     Immich[immich]
     OpenClaw[openclaw]
@@ -55,7 +54,6 @@ flowchart TB
   %% Portainer ownership split
   Portainer1 --> SignalREST
   Portainer2 --> SignalRPC
-  Portainer2 --> Ghost
 
   %% Shared services dependencies
   HA --> Mosquitto
@@ -71,7 +69,6 @@ flowchart TB
 
   %% Access to internal apps
   NPM --> HA
-  NPM --> Ghost
   NPM --> Plex
 ```
 
