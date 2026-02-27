@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="30" y="40" font-family="Arial" font-size="28" font-weight="700" fill="#111827">lan-infra network zones</text>
+
+  <!-- Outside -->
+  <rect x="30" y="80" width="1140" height="120" rx="12" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="50" y="110" font-family="Arial" font-size="18" font-weight="700" fill="#312E81">Outside network clients</text>
+  <rect x="60" y="125" width="240" height="52" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="95" y="157" font-family="Arial" font-size="15">Remote users</text>
+  <rect x="330" y="125" width="260" height="52" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="374" y="157" font-family="Arial" font-size="15">Internet / Cloudflare</text>
+
+  <!-- DMZ -->
+  <rect x="30" y="230" width="1140" height="180" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/>
+  <text x="50" y="260" font-family="Arial" font-size="18" font-weight="700" fill="#9A3412">DMZ / Edge zone</text>
+  <rect x="60" y="285" width="230" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="116" y="319" font-family="Arial" font-size="15">cloudflared</text>
+  <rect x="320" y="285" width="260" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="366" y="319" font-family="Arial" font-size="15">nginx-proxy-manager</text>
+  <rect x="610" y="285" width="260" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="652" y="319" font-family="Arial" font-size="15">tailscale-subnet-router</text>
+  <rect x="900" y="285" width="240" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="964" y="319" font-family="Arial" font-size="15">portainer</text>
+
+  <!-- Inside -->
+  <rect x="30" y="440" width="1140" height="280" rx="12" fill="#ECFDF5" stroke="#059669" stroke-width="2"/>
+  <text x="50" y="470" font-family="Arial" font-size="18" font-weight="700" fill="#065F46">Inside LAN services</text>
+  <rect x="60" y="500" width="220" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="109" y="534" font-family="Arial" font-size="15">Home Assistant</text>
+  <rect x="300" y="500" width="200" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="341" y="534" font-family="Arial" font-size="15">avahi-reflector</text>
+  <rect x="520" y="500" width="170" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="578" y="534" font-family="Arial" font-size="15">redis</text>
+  <rect x="710" y="500" width="170" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="752" y="534" font-family="Arial" font-size="15">postgres</text>
+  <rect x="900" y="500" width="240" height="56" rx="10" fill="#fff" stroke="#94A3B8"/>
+  <text x="968" y="534" font-family="Arial" font-size="15">signal-cli-rpc</text>
+
+  <rect x="60" y="585" width="160" height="50" rx="10" fill="#fff" stroke="#94A3B8"/><text x="107" y="615" font-family="Arial" font-size="14">openclaw</text>
+  <rect x="240" y="585" width="160" height="50" rx="10" fill="#fff" stroke="#94A3B8"/><text x="284" y="615" font-family="Arial" font-size="14">nextcloud</text>
+  <rect x="420" y="585" width="170" height="50" rx="10" fill="#fff" stroke="#94A3B8"/><text x="448" y="615" font-family="Arial" font-size="14">paperless-ngx</text>
+  <rect x="610" y="585" width="160" height="50" rx="10" fill="#fff" stroke="#94A3B8"/><text x="666" y="615" font-family="Arial" font-size="14">immich</text>
+  <rect x="790" y="585" width="160" height="50" rx="10" fill="#fff" stroke="#94A3B8"/><text x="850" y="615" font-family="Arial" font-size="14">plex</text>
+
+  <!-- Links -->
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="460" y1="177" x2="175" y2="285"/>
+    <line x1="460" y1="177" x2="450" y2="285"/>
+    <line x1="460" y1="177" x2="740" y2="285"/>
+    <line x1="450" y1="341" x2="170" y2="500"/>
+    <line x1="450" y1="341" x2="400" y2="500"/>
+    <line x1="1010" y1="341" x2="1010" y2="500"/>
+    <line x1="170" y1="556" x2="140" y2="585"/>
+    <line x1="1010" y1="556" x2="870" y2="585"/>
+  </g>
+</svg>
