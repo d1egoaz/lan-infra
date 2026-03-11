@@ -33,7 +33,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
   web:
-    image: nginx:1.29.6-trixie@sha256:abe31ab917829ab5063d775ff83d784c6d7a00fb4bcc5424ef3dbad8d0729e4a
+    image: nginx:1.29.6-trixie@sha256:bc45d248c4e1d1709321de61566eb2b64d4f0e32765239d66573666be7f13349
     container_name: web
     network_mode: "service:nordvpn"
     restart: unless-stopped
