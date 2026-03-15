@@ -67,14 +67,20 @@
       "enabled": false
     },
     {
-      "description": "Keep Portainer on 2.33 LTS line while still allowing digest updates",
+      "description": "Keep Portainer on 2.39 LTS line while still allowing digest updates",
       "matchManagers": [
         "docker-compose"
       ],
       "matchPackageNames": [
         "portainer/portainer-ee"
       ],
-      "allowedVersions": "/^2\\.33\\./"
+      "allowedVersions": "/^2\\.39\\./"
+    },
+    {
+      "description": "Ignore music-assistant-alexa-api image",
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["ghcr.io/alams154/music-assistant-alexa-api"],
+      "enabled": false
     }
   ]
 }
