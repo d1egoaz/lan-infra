@@ -7,7 +7,7 @@ class PortainerWebhookDeploy {
     this.servicesPath = 'services';
     this.secretPrefix = 'PORTAINER_WEBHOOK_';
     // Services that don't have webhooks (e.g., portainer itself, unmanaged stacks)
-    this.ignoredServices = new Set(['portainer', 'signal-cli']);
+    this.ignoredServices = new Set(['portainer', 'signal-cli', 'music-assistant-alexa-api']);
   }
 
   extractServiceNames(filePaths) {
