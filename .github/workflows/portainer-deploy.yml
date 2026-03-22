@@ -59,9 +59,6 @@ jobs:
           PORTAINER_WEBHOOK_SIGNAL_CLI_RPC: ${{ secrets.PORTAINER_WEBHOOK_SIGNAL_CLI_RPC }}
           PORTAINER_WEBHOOK_UHF_SERVER: ${{ secrets.PORTAINER_WEBHOOK_UHF_SERVER }}
           PORTAINER_WEBHOOK_TAILSCALE_SUBNET_ROUTER: ${{ secrets.PORTAINER_WEBHOOK_TAILSCALE_SUBNET_ROUTER }}
-          # ⚠️ NOTE: The following services do not have webhooks configured:
-          #   PORTAINER_WEBHOOK_PORTAINER
-          #   PORTAINER_WEBHOOK_SIGNAL_CLI
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           node scripts/portainer-webhook-deploy.js
