@@ -6,6 +6,8 @@ class PortainerWebhookDeploy {
   constructor() {
     this.servicesPath = 'services';
     this.secretPrefix = 'PORTAINER_WEBHOOK_';
+    // Services that don't have webhooks (e.g., portainer itself, unmanaged stacks)
+    this.ignoredServices = new Set(['portainer', 'signal-cli', 'music-assistant-alexa-api']);
   }
 
   extractServiceNames(filePaths) {
@@ -134,10 +136,23 @@ class PortainerWebhookDeploy {
       return { deployed: [], skipped: [], success: true };
     }
 
-    console.log(`🎯 Services to deploy: ${serviceNames.join(', ')}\n`);
+    // Filter out ignored services
+    const activeServices = serviceNames.filter(s => !this.ignoredServices.has(s));
+    const ignoredFound = serviceNames.filter(s => this.ignoredServices.has(s));
+    
+    if (ignoredFound.length > 0) {
+      console.log(`🔇 Ignored services (no webhook): ${ignoredFound.join(', ')}`);
+    }
+    
+    if (activeServices.length === 0) {
+      console.log('📝 No deployable services after filtering ignored');
+      return { deployed: [], skipped: ignoredFound, success: true };
+    }
+
+    console.log(`🎯 Services to deploy: ${activeServices.join(', ')}\n`);
 
     const results = [];
-    for (const serviceName of serviceNames) {
+    for (const serviceName of activeServices) {
       try {
         const webhookUrl = this.getWebhookUrl(serviceName);
         console.log(`⚡ Deploying ${serviceName}...`);
