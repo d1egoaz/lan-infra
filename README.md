@@ -65,7 +65,7 @@ No `latest` tags. Digests make every update auditable.
 
 ## Dependency Updates
 
-Renovate runs weekly (Mondays before 6am PT) and opens PRs for image updates.
+Renovate runs daily at 8am PT and opens PRs for image updates after they meet the minimum release age.
 
 ### Key Policies
 

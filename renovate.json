@@ -34,7 +34,7 @@
   ],
   "timezone": "America/Vancouver",
   "schedule": [
-    "before 6am on monday"
+    "0 8 * * *"
   ],
   "packageRules": [
     {
