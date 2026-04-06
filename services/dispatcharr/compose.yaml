@@ -41,7 +41,7 @@ services:
       - nordvpn
 
   dispatcharr:
-    image: ghcr.io/dispatcharr/dispatcharr:latest@sha256:3fe4da0af06887781aba4650bb64bbffc3a10f11a602d4d5a1a8df6a8edca416
+    image: ghcr.io/dispatcharr/dispatcharr:latest@sha256:ccdfa7e407f48878567fed06dcf895e437e01b9240f7b944a486722ba8aa6c4d
     container_name: dispatcharr
     restart: unless-stopped
     network_mode: "service:nordvpn"
