@@ -4,7 +4,7 @@ networks:
 
 services:
   litellm:
-    image: ghcr.io/berriai/litellm:v1.83.3-stable@sha256:1bc003a50e5c9177909975e1523cf780a5f385c76216e26e96c50fb02611209f
+    image: ghcr.io/berriai/litellm:v1.83.7-stable@sha256:af0152ca6dfb6703b35c0d4899effa9ac132bce9a4fbcbe1dc6ef145c100db26
     restart: unless-stopped
     volumes:
       - /srv/data/projects/infra/services/litellm/config.yaml:/app/config.yaml:ro
