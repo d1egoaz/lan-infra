@@ -10,7 +10,6 @@ Each service lives in its own directory under `services/` with a `compose.yaml`.
 services/
 ├── adguard/              # DNS filtering (AdGuard Home)
 ├── cloudflared/          # Cloudflare tunnel ingress
-├── dispatcharr/          # Media download manager (Radarr/Sonarr replacement) + qBittorrent
 ├── govee2mqtt/           # Govee lights → MQTT bridge
 ├── hello/                # Health check / connectivity test (nginx hello)
 ├── home-assistant/       # Home automation (HA + Music Assistant + Avahi)
