@@ -16,6 +16,8 @@ services:
     cap_add:
       - NET_ADMIN
       - NET_RAW
+    sysctls:
+      - net.ipv6.conf.all.forwarding=1
     restart: unless-stopped
 
 volumes:
