@@ -11,7 +11,7 @@ volumes:
 
 services:
   openclaw-gateway:
-    image: ghcr.io/openclaw/openclaw:2026.6.9@sha256:c440a75f5580acb135409068f39ca701a5ca10fb9892cd9473a60ba0669cc0dc
+    image: ghcr.io/openclaw/openclaw:2026.6.10@sha256:af7ea052cf216f581fb18fabada01552356c53717461c0399b623cba7ecad4b1
     restart: unless-stopped
     init: true
     environment:
@@ -49,7 +49,7 @@ services:
       - /var/tmp
 
   openclaw-cli:
-    image: ghcr.io/openclaw/openclaw:2026.6.9@sha256:c440a75f5580acb135409068f39ca701a5ca10fb9892cd9473a60ba0669cc0dc
+    image: ghcr.io/openclaw/openclaw:2026.6.10@sha256:af7ea052cf216f581fb18fabada01552356c53717461c0399b623cba7ecad4b1
     profiles:
       - cli
     init: true
