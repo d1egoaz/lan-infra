@@ -32,7 +32,7 @@ services:
       PORTAINER_API_KEY: ${PORTAINER_API_KEY}
       PORTAINER_URL: ${PORTAINER_URL}
     ports:
-      - "127.0.0.1:${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
     volumes:
       - openclaw_state:/home/node/.openclaw
     networks:

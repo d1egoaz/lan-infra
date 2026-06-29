@@ -52,7 +52,8 @@ Note: these precedence rules apply once you provide an `openclaw.json` file insi
 
 ## Security Notes
 
-- `openclaw-gateway` is bound to loopback only: `127.0.0.1:${OPENCLAW_GATEWAY_PORT}`.
+- `openclaw-gateway` publishes `${OPENCLAW_GATEWAY_PORT:-18789}` on the Docker host so trusted LAN clients can reach it.
+- Gateway token auth stays enabled; do not expose this port outside the trusted LAN without a stronger ingress policy.
 - No Signal RPC host port is published. It is reachable only on Docker networks.
 - `cap_drop: [ALL]` and `no-new-privileges` are enabled for OpenClaw services.
 - Never commit real secrets in git.
