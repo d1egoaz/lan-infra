@@ -17,7 +17,6 @@ address:
 
 ```yaml
 homekit:
-  - advertise_ip: "<DOCKER_HOST_LAN_IP>"
   - name: "Example Camera"
     port: 21070
     mode: accessory
@@ -41,7 +40,7 @@ After changing the configuration:
 2. Restart Home Assistant.
 3. Confirm the configured TCP port is listening on the Docker host.
 4. Browse `_hap._tcp.local.` and resolve the new HomeKit service.
-5. Verify that the service hostname includes `<DOCKER_HOST_LAN_IP>` before
+5. Verify that the service hostname resolves to `<DOCKER_HOST_LAN_IP>` before
    pairing it in Apple Home.
 
 Example verification on macOS:
@@ -49,9 +48,12 @@ Example verification on macOS:
 ```sh
 dns-sd -B _hap._tcp local.
 dns-sd -L '<HOMEKIT_INSTANCE_NAME>' _hap._tcp local.
-dns-sd -G v4 '<ADVERTISED_HOSTNAME>.local.'
+dns-sd -G v4 '<ADVERTISED_HOSTNAME>'
 nc -vz <DOCKER_HOST_LAN_IP> <HOMEKIT_PORT>
 ```
+
+Pass `<ADVERTISED_HOSTNAME>` exactly as reported by `dns-sd -L`, including its
+trailing `.local.` suffix.
 
 The address list may also contain a Docker address. That is acceptable as long
 as it includes the routable host LAN address and the published host port is
