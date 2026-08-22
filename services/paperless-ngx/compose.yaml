@@ -12,7 +12,7 @@ volumes:
 
 services:
   broker:
-    image: docker.io/library/redis:8@sha256:c88d347edef6249a6d2293f926f1eeb48bd40c57cbcd02c07f52e7f1fd2cb46b
+    image: docker.io/library/redis:8@sha256:691577adaf11927f4bb8871d40a5dd69a5c300d4453b742e8f6383c3e6e8d2e1
     restart: unless-stopped
     volumes:
       - redisdata_paperless:/data
