@@ -77,6 +77,30 @@
       "allowedVersions": "/^2\\.39\\./"
     },
     {
+      "description": "Keep UHF Server on 1.6.0 because 2.x changes recordings to HLS segments",
+      "matchManagers": [
+        "docker-compose"
+      ],
+      "matchPackageNames": [
+        "swapplications/uhf-server"
+      ],
+      "allowedVersions": "/^1\\.6\\.0$/"
+    },
+    {
+      "description": "Track LinuxServer Plex tags across changing build suffixes",
+      "matchManagers": [
+        "docker-compose"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "lscr.io/linuxserver/plex"
+      ],
+      "versioning": "loose",
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
       "description": "Ignore music-assistant-alexa-api image",
       "matchManagers": [
         "docker-compose"
