@@ -40,7 +40,7 @@ services:
   # mDNS reflector for HomeKit discovery when HA runs in bridge mode.
   # Reflects multicast DNS between host interfaces/VLANs.
   avahi-reflector:
-    image: flungo/avahi:latest@sha256:349ec76564859cf9758f0a1e8ce4a032d5574ff8aaf8c7711077998be76cc8e5
+    image: flungo/avahi:latest@sha256:c12a6027d2f85a3461a9365997b218ccab55e4dde1e435541034ed1bc401ec78
     container_name: avahi-reflector
     restart: unless-stopped
     network_mode: host
