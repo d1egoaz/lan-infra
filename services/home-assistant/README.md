@@ -2,8 +2,8 @@
 
 This stack runs Home Assistant behind Docker bridge networking and publishes
 HomeKit services through an mDNS reflector. The Compose file exposes the
-HomeKit TCP port range, but each HomeKit bridge must also advertise an address
-that HomeKit clients can route to.
+HomeKit TCP port range through a bridge-only proxy, while Home Assistant keeps
+a separate LAN address for AirPlay.
 
 ## HomeKit behind Docker bridge networking
 
@@ -26,8 +26,8 @@ homekit:
         - camera.example_camera
 ```
 
-Use a unique TCP port for each bridge or accessory, and publish that port from
-the container. This stack reserves `21063-21084` for HomeKit.
+Use a unique TCP port for each bridge or accessory. This stack reserves and
+publishes `21063-21084` through `homekit-port-proxy`.
 
 The `advertise_ip` option is part of the HomeKit YAML configuration. A HomeKit
 bridge created through the Home Assistant UI does not inherit options from an
@@ -65,6 +65,53 @@ advertisement that points exclusively to an unreachable container address.
 
 See the upstream Home Assistant documentation for
 [`advertise_ip` and Docker network isolation](https://www.home-assistant.io/integrations/homekit/#docker-network-isolation).
+
+## Why HomeKit uses a bridge-only proxy
+
+Home Assistant also has the reserved LAN address `192.168.42.80` on the
+external `homeassistant_lan` IPvlan network. `pyatv` needs that routable source
+address for HomePod AirPlay and TTS return traffic.
+
+The IPvlan interface changes the return path for connections published directly
+from the Home Assistant container. A LAN client can reach a HomeKit port on the
+container's own LAN address, but a connection to the same port on the Docker
+host address times out because the reply leaves through IPvlan instead of
+returning through Docker's published-port path.
+
+`homekit-port-proxy` avoids that asymmetric path without changing existing
+HomeKit advertisements or pairings:
+
+1. The HomeKit client connects to the advertised Docker host LAN address.
+2. Docker publishes `21063-21084` from the bridge-only proxy.
+3. The proxy opens a separate connection to `homeassistant` on the same Docker
+   bridge and destination port.
+4. Home Assistant returns that connection over the Docker bridge while keeping
+   its IPvlan address available for AirPlay.
+
+The proxy deliberately joins only the `homeassistant` Docker bridge. Do not
+attach it to `homeassistant_lan`, or it can acquire the same asymmetric return
+path it exists to avoid.
+
+HAProxy preserves the frontend destination port when its backend server has no
+port configured, so one frontend range covers every reserved HomeKit port. Its
+Docker DNS resolver and TCP health check follow Home Assistant container address
+changes after restarts.
+
+After deploying, verify both paths independently:
+
+```sh
+# Existing HomeKit path through the Docker host and bridge-only proxy
+nc -vz <DOCKER_HOST_LAN_IP> 21063
+nc -vz <DOCKER_HOST_LAN_IP> 21070
+nc -vz <DOCKER_HOST_LAN_IP> 21073
+
+# Direct LAN path retained for Home Assistant and AirPlay
+nc -vz 192.168.42.80 8123
+```
+
+Then control an accessory from Apple Home and run a Home Assistant `tts.speak`
+action against a HomePod. Compose validation alone cannot verify either runtime
+path.
 
 ## State and backups
 

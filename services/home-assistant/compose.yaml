@@ -36,8 +36,6 @@ services:
     privileged: true
     ports:
       - "8123:8123"
-      # HomeKit bridge + accessory pairing ports (bridge mode)
-      - "21063-21084:21063-21084"
     networks:
       homeassistant: {}
       app_network: {}
@@ -49,6 +47,24 @@ services:
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
+  # Preserve the Docker host address advertised by the existing HomeKit
+  # bridges without routing their replies through Home Assistant's IPvlan
+  # interface. The proxy receives the published connection on this bridge-only
+  # network and opens a separate connection to Home Assistant on the same port.
+  homekit-port-proxy:
+    image: haproxy:3.4.4-alpine@sha256:c0afc4864dca9c68694cd1290433f0ee79b5c55be80f6745a165ffe373b9a564
+    container_name: homekit-port-proxy
+    restart: unless-stopped
+    depends_on:
+      homeassistant:
+        condition: service_started
+    ports:
+      - "21063-21084:21063-21084"
+    volumes:
+      - /srv/data/projects/infra/services/home-assistant/homekit-proxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    networks:
+      - homeassistant
+
   # mDNS reflector for HomeKit discovery when HA runs in bridge mode.
   # Reflects multicast DNS between host interfaces/VLANs.
   avahi-reflector:
@@ -58,3 +74,4 @@ services:
     network_mode: host
     environment:
       - REFLECTOR_ENABLE_REFLECTOR=yes
+
