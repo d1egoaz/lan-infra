@@ -1,9 +1,9 @@
 # Home Assistant
 
 This stack runs Home Assistant behind Docker bridge networking and publishes
-HomeKit services through an mDNS reflector. The Compose file exposes the
-HomeKit TCP port range through a bridge-only proxy, while Home Assistant keeps
-a separate LAN address for AirPlay.
+HomeKit services through an mDNS reflector. The Compose file exposes the UI and
+HomeKit TCP ports through a bridge-only proxy, while Home Assistant keeps a
+separate LAN address for AirPlay.
 
 ## HomeKit behind Docker bridge networking
 
@@ -27,7 +27,7 @@ homekit:
 ```
 
 Use a unique TCP port for each bridge or accessory. This stack reserves and
-publishes `21063-21084` through `homekit-port-proxy`.
+publishes `21063-21084` through `homeassistant-port-proxy`.
 
 The `advertise_ip` option is part of the HomeKit YAML configuration. A HomeKit
 bridge created through the Home Assistant UI does not inherit options from an
@@ -55,9 +55,9 @@ nc -vz <DOCKER_HOST_LAN_IP> <HOMEKIT_PORT>
 Pass `<ADVERTISED_HOSTNAME>` exactly as reported by `dns-sd -L`, including its
 trailing `.local.` suffix.
 
-The address list may also contain a Docker address. That is acceptable as long
-as it includes the routable host LAN address and the published host port is
-reachable from the HomeKit client's network.
+Exclude Docker-only addresses from the Home Assistant Network panel's HomeKit
+announcement set. A LAN client cannot route to them, and a camera accessory may
+also use an announced address as its stream address.
 
 If discovery works but pairing remains on **Setting Up** until it times out,
 check the resolved address first. Opening more ports will not fix an
@@ -66,7 +66,7 @@ advertisement that points exclusively to an unreachable container address.
 See the upstream Home Assistant documentation for
 [`advertise_ip` and Docker network isolation](https://www.home-assistant.io/integrations/homekit/#docker-network-isolation).
 
-## Why HomeKit uses a bridge-only proxy
+## Why published LAN ports use a bridge-only proxy
 
 Home Assistant also has the reserved LAN address `192.168.42.80` on the
 external `homeassistant_lan` IPvlan network. `pyatv` needs that routable source
@@ -78,11 +78,11 @@ container's own LAN address, but a connection to the same port on the Docker
 host address times out because the reply leaves through IPvlan instead of
 returning through Docker's published-port path.
 
-`homekit-port-proxy` avoids that asymmetric path without changing existing
-HomeKit advertisements or pairings:
+`homeassistant-port-proxy` avoids that asymmetric path without changing
+existing HomeKit advertisements or pairings:
 
 1. The HomeKit client connects to the advertised Docker host LAN address.
-2. Docker publishes `21063-21084` from the bridge-only proxy.
+2. Docker publishes `8123` and `21063-21084` from the bridge-only proxy.
 3. The proxy opens a separate connection to `homeassistant` on the same Docker
    bridge and destination port.
 4. Home Assistant returns that connection over the Docker bridge while keeping
@@ -93,14 +93,15 @@ attach it to `homeassistant_lan`, or it can acquire the same asymmetric return
 path it exists to avoid.
 
 HAProxy preserves the frontend destination port when its backend server has no
-port configured, so one frontend range covers every reserved HomeKit port. Its
-Docker DNS resolver and TCP health check follow Home Assistant container address
-changes after restarts.
+port configured, so the UI and every reserved HomeKit port reach their matching
+port in Home Assistant. Its Docker DNS resolver and TCP health check follow Home
+Assistant container address changes after restarts.
 
 After deploying, verify both paths independently:
 
 ```sh
 # Existing HomeKit path through the Docker host and bridge-only proxy
+nc -vz <DOCKER_HOST_LAN_IP> 8123
 nc -vz <DOCKER_HOST_LAN_IP> 21063
 nc -vz <DOCKER_HOST_LAN_IP> 21070
 nc -vz <DOCKER_HOST_LAN_IP> 21073
