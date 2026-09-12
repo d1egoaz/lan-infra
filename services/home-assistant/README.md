@@ -83,20 +83,35 @@ nc -vz <DOCKER_HOST_LAN_IP> <HOMEKIT_PORT>   # times out
 nc -vz <CONTAINER_LAN_IP> <HOMEKIT_PORT>     # succeeds
 ```
 
-If Home Assistant needs a LAN address (for example so `pyatv` can advertise a
-routable AirPlay source address), move the HomeKit advertisement first:
+Adding the L2 LAN interface and moving the advertisement are one change, not
+two. Attach the LAN network first: the adapter only exists inside the container
+after the network is attached, so it cannot be enabled before that.
 
-1. Set `advertise_ip` to the container's LAN address on every YAML-managed
-   bridge and reload the HomeKit integration.
-2. Enable the container's LAN adapter in the Network panel
-   (Settings > System > Network). Every address listed there is announced by
-   UI-created bridges, which cannot set `advertise_ip` themselves.
-3. Only then attach the L2 LAN network, and confirm HomeKit still answers from
-   a phone on the LAN.
+1. Attach the L2 LAN network to this stack and start the container.
+2. Enable that adapter in the Network panel (Settings > System > Network).
+   Addresses of enabled adapters are announced by UI-created bridges, and a
+   UI-created bridge cannot set `advertise_ip` itself; it can only announce
+   addresses that exist on the container.
+3. Set `advertise_ip` to the container's LAN address on every YAML-managed
+   bridge, then reload the HomeKit integration or restart Home Assistant.
+4. Confirm `dns-sd -G v4 <uuid>-hap.local` resolves to the container's LAN
+   address and that HomeKit answers from a phone on the LAN. Allow one reload
+   for the previous address to clear.
 
-Detach the L2 LAN network before undoing step 1 or step 2. A bridge that
-advertises an address clients cannot reach fails exactly like an unreachable
-container address: discovery works and every connection times out.
+Going back is the mirror image: detach the L2 LAN network first, then point
+`advertise_ip` back at the Docker host LAN address, then reload. The
+host-published ports are unreachable while the L2 LAN interface is attached,
+and the container's LAN address leaves the advertisement as soon as it is
+detached.
+
+Leaving those two states out of step is what breaks HomeKit: every bridge keeps
+advertising an address that nothing answers on, so discovery works and every
+connection times out.
+
+This stack currently keeps Home Assistant off the LAN network on purpose, see
+the ports comment in `compose.yaml`. The AirPlay LAN source address added for
+the Home Assistant TTS path is parked until the advertisement above moves; both
+changes land together.
 
 ## State and backups
 

@@ -35,9 +35,15 @@ services:
       - "8123:8123"
       # HomeKit bridge + accessory pairing ports (bridge mode). HomeKit
       # clients are told to reach the Docker host LAN address, so these ports
-      # must stay published and reachable there. Do not attach this container
-      # to an L2 LAN network (ipvlan/macvlan) without first moving the HomeKit
-      # advertisement to the container LAN address; see README.md.
+      # must stay published and reachable there.
+      #
+      # Deliberate temporary regression: staying off the LAN ipvlan network
+      # parks the routable AirPlay source address that #427 added for the
+      # HomePod TTS path, because pyatv needs a LAN address to advertise.
+      # Attaching the L2 LAN network and moving the advertisement are one
+      # change: attach it only once every HomeKit advertisement points at the
+      # container LAN address (`advertise_ip` for YAML bridges, plus the
+      # Network panel adapter for UI-created bridges). See README.md.
       - "21063-21084:21063-21084"
     networks:
       - homeassistant
