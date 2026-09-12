@@ -28,6 +28,11 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Vancouver
+    # Keep the configured HTTPS internal URL while resolving it through the
+    # Docker bridge gateway from inside this container. This avoids IPvlan
+    # host-isolation when HA fetches its own TTS/media proxy URLs.
+    extra_hosts:
+      - "ha.lan.diegoa.ca:172.24.0.1"
     privileged: true
     ports:
       - "8123:8123"
