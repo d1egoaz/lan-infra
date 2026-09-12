@@ -13,6 +13,9 @@ networks:
   ha_signal_private:
     name: ha_signal_private
     internal: true
+  homeassistant_lan:
+    name: homeassistant_lan
+    external: true
 
 services:
   homeassistant:
@@ -31,9 +34,13 @@ services:
       # HomeKit bridge + accessory pairing ports (bridge mode)
       - "21063-21084:21063-21084"
     networks:
-      - homeassistant
-      - app_network
-      - ha_signal_private
+      homeassistant: {}
+      app_network: {}
+      ha_signal_private: {}
+      homeassistant_lan:
+        ipv4_address: 192.168.42.80
+    # A routable LAN address is required for pyatv's AirPlay RTSP return path.
+    # The external ipvlan network is created on the Docker host's LAN NIC.
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
@@ -46,4 +53,3 @@ services:
     network_mode: host
     environment:
       - REFLECTOR_ENABLE_REFLECTOR=yes
-
