@@ -66,6 +66,38 @@ advertisement that points exclusively to an unreachable container address.
 See the upstream Home Assistant documentation for
 [`advertise_ip` and Docker network isolation](https://www.home-assistant.io/integrations/homekit/#docker-network-isolation).
 
+## Keep the published HomeKit ports reachable
+
+HomeKit clients connect to the Docker host's LAN address, so the published
+`21063-21084` range has to be reachable there. Listening inside the container
+is not enough.
+
+Do not attach this container to an L2 LAN network (`ipvlan` or `macvlan`) while
+HomeKit is advertised that way. With an L2 LAN interface the container answers
+LAN clients directly instead of through the Docker host, so the published ports
+time out from the LAN while the same ports still answer on the container's own
+LAN address:
+
+```sh
+nc -vz <DOCKER_HOST_LAN_IP> <HOMEKIT_PORT>   # times out
+nc -vz <CONTAINER_LAN_IP> <HOMEKIT_PORT>     # succeeds
+```
+
+If Home Assistant needs a LAN address (for example so `pyatv` can advertise a
+routable AirPlay source address), move the HomeKit advertisement first:
+
+1. Set `advertise_ip` to the container's LAN address on every YAML-managed
+   bridge and reload the HomeKit integration.
+2. Enable the container's LAN adapter in the Network panel
+   (Settings > System > Network). Every address listed there is announced by
+   UI-created bridges, which cannot set `advertise_ip` themselves.
+3. Only then attach the L2 LAN network, and confirm HomeKit still answers from
+   a phone on the LAN.
+
+Detach the L2 LAN network before undoing step 1 or step 2. A bridge that
+advertises an address clients cannot reach fails exactly like an unreachable
+container address: discovery works and every connection times out.
+
 ## State and backups
 
 The `homeassistant-data` volume is external and mounted at `/config`. It holds

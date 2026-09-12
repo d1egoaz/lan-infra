@@ -13,9 +13,6 @@ networks:
   ha_signal_private:
     name: ha_signal_private
     internal: true
-  homeassistant_lan:
-    name: homeassistant_lan
-    external: true
 
 services:
   homeassistant:
@@ -28,24 +25,24 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Vancouver
-    # Keep the configured HTTPS internal URL while resolving it through the
-    # Docker bridge gateway from inside this container. This avoids IPvlan
-    # host-isolation when HA fetches its own TTS/media proxy URLs.
+    # Resolve the configured HTTPS internal URL through the Docker bridge
+    # gateway from inside this container, so HA can fetch its own TTS and
+    # media proxy URLs.
     extra_hosts:
       - "ha.lan.diegoa.ca:172.24.0.1"
     privileged: true
     ports:
       - "8123:8123"
-      # HomeKit bridge + accessory pairing ports (bridge mode)
+      # HomeKit bridge + accessory pairing ports (bridge mode). HomeKit
+      # clients are told to reach the Docker host LAN address, so these ports
+      # must stay published and reachable there. Do not attach this container
+      # to an L2 LAN network (ipvlan/macvlan) without first moving the HomeKit
+      # advertisement to the container LAN address; see README.md.
       - "21063-21084:21063-21084"
     networks:
-      homeassistant: {}
-      app_network: {}
-      ha_signal_private: {}
-      homeassistant_lan:
-        ipv4_address: 192.168.42.80
-    # A routable LAN address is required for pyatv's AirPlay RTSP return path.
-    # The external ipvlan network is created on the Docker host's LAN NIC.
+      - homeassistant
+      - app_network
+      - ha_signal_private
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
 
