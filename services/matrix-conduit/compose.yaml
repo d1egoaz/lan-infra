@@ -20,6 +20,8 @@ services:
       CONDUIT_ALLOW_FEDERATION: "false"
       CONDUIT_MAX_REQUEST_SIZE: "20000000"
       CONDUIT_TRUSTED_SERVERS: "[]"
+      CONDUIT_WELL_KNOWN_CLIENT: "https://matrix.diegoa.ca"
+      CONDUIT_WELL_KNOWN_SERVER: "matrix.diegoa.ca:443"
       CONDUIT_MAX_CONCURRENT_REQUESTS: "100"
     volumes:
       - /srv/data/projects/docker-volumes/matrix-conduit:/var/lib/matrix-conduit
