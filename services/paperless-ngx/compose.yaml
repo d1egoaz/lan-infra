@@ -19,7 +19,7 @@ services:
     networks:
       - app_network
   db:
-    image: docker.io/library/postgres:17@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675
+    image: docker.io/library/postgres:17@sha256:c6222b54873a2fb19591cb06b93ef2825c03cdb680396e3600f24921f340f630
     restart: unless-stopped
     volumes:
       - pgdata_paperless:/var/lib/postgresql/data
@@ -30,7 +30,7 @@ services:
     networks:
       - app_network
   paperless-web:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.1.3@sha256:aa810a36942c63d4ee70d00eda7236cd3d6acfb7eb3f7987fb568ed14df8817a
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.2.0@sha256:22dc423ff48ac1629977dbf0c9625ba9f60d3bd1291a2ff173c65351984a14c2
     restart: unless-stopped
     depends_on:
       - db
