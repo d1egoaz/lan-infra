@@ -33,8 +33,12 @@ services:
     # host-isolation when HA fetches its own TTS/media proxy URLs.
     extra_hosts:
       - "ha.lan.diegoa.ca:172.24.0.1"
-    privileged: true
+      - "adguard.lan.diegoa.ca:172.24.0.1"
+      - "paperless.lan.diegoa.ca:172.24.0.1"
     ports:
+      # NPM uses this host publish for ha.lan.diegoa.ca and HA self-fetches.
+      # LAN clients use 192.168.42.80:8123; the host IP times out from that LAN
+      # because replies leave through IPvlan instead of Docker's reverse NAT.
       - "8123:8123"
     networks:
       homeassistant: {}
@@ -45,6 +49,8 @@ services:
     # A routable LAN address is required for AirPlay and HomeKit. HomeKit
     # advertises and serves its ports directly from this IPvlan address.
     devices:
+      # Grant the ZHA coordinator instead of all host devices. Additional USB
+      # devices need their own mapping. Validate ZHA after recreate.
       - /dev/ttyUSB0:/dev/ttyUSB0
 
   # mDNS reflector for HomeKit discovery when HA runs in bridge mode.
