@@ -1,0 +1,27 @@
+name: PR author policy
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  allowed-author:
+    name: PR author allowlist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check pull request author
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          case "$PR_AUTHOR" in
+            d1egoaz|R2-Claw2|renovate\[bot\])
+              echo "${PR_AUTHOR} is allowed to open pull requests."
+              ;;
+            *)
+              echo "::error::Pull requests may only be opened by d1egoaz, R2-Claw2, or renovate[bot]."
+              exit 1
+              ;;
+          esac
