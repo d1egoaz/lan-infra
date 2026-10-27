@@ -1,6 +1,6 @@
 services:
   govee2mqtt:
-    image: ghcr.io/wez/govee2mqtt:2025.11.25-60a39bcc@sha256:51beba0e5104a21b3955cec166519293a12b4f8b60275177b2813fca1d08e437
+    image: ghcr.io/wez/govee2mqtt:2026.03.25-ab9deb66@sha256:a9d9fe330574d16be5a68175f2572615f9e55385695ab40652cc388076a07643
     container_name: govee2mqtt
     restart: unless-stopped
     network_mode: host
