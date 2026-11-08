@@ -30,7 +30,7 @@ services:
     networks:
       - app_network
   paperless-web:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.4.0@sha256:7c1d98afd200def9e2bad3a377d30829e8d486554b3c818995af5860114ea17f
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.4.2@sha256:d704e84f88300eb6ab001ab15720a2330ff99169cf9f94d6b8fcc44b63a84c84
     restart: unless-stopped
     depends_on:
       - db
