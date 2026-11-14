@@ -20,15 +20,12 @@ services/
 ├── music-assistant-alexa-api/  # Music Assistant → Alexa bridge
 ├── nextcloud/            # File sync / collaboration
 ├── nginxproxymanager/    # Reverse proxy (NPM)
-├── openclaw/             # AI assistant (OpenClaw + Signal CLI)
 ├── paperless-ai/         # OCR document tagging (companion to Paperless-ngx)
 ├── paperless-ngx/        # Document management (Paperless + Postgres + Redis + Gotenberg + Tika)
 ├── plex/                 # Media server
 ├── portainer/            # Container orchestration UI
 ├── postgres/             # Shared Postgres + pgAdmin
 ├── redis/                # Shared Valkey (Redis-compatible)
-├── signal-cli-rest-api/  # Signal messaging REST API
-├── signal-cli-rpc/       # Signal CLI daemon
 ├── tailscale-subnet-router/  # Tailscale subnet router for LAN access
 └── uhf-server/           # UHF RFID tag reader server
 ```
