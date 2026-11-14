@@ -4,26 +4,29 @@ networks:
   app_network:
     external: true
 
+# Tuwunel replaces Conduit v0.10.15: Conduit's sliding sync returns a hero
+# avatar for every room, so Element X never shows room avatars. Tuwunel adopts
+# the existing Conduit RocksDB in place on first boot (one way: back up first).
+# Stack, container, and volume names stay "conduit" so the reverse proxy and
+# Portainer stack need no change.
 services:
   conduit:
-    image: matrixconduit/matrix-conduit:v0.10.15@sha256:cb4deab33ea1a6da919a0ea99e76be75d6af5936623fd9dde442a17e2d0b320f
+    image: ghcr.io/matrix-construct/tuwunel:v2.0.0@sha256:3dde1e9b3503c68218f95415ec3ebff522bd945065ba76019d408543540d1730
     container_name: conduit
     restart: unless-stopped
+    # The first boot migrates the Conduit database and must not be killed part way.
+    stop_grace_period: 30m
     environment:
-      CONDUIT_CONFIG: ""
-      CONDUIT_SERVER_NAME: diegoa.ca
-      CONDUIT_PORT: "6167"
-      CONDUIT_ADDRESS: "0.0.0.0"
-      CONDUIT_DATABASE_BACKEND: rocksdb
-      CONDUIT_DATABASE_PATH: /var/lib/matrix-conduit
-      CONDUIT_ALLOW_REGISTRATION: "false"
-      CONDUIT_ALLOW_FEDERATION: "false"
-      CONDUIT_ALLOW_CHECK_FOR_UPDATES: "false"
-      CONDUIT_MAX_REQUEST_SIZE: "20000000"
-      CONDUIT_TRUSTED_SERVERS: "[]"
-      CONDUIT_WELL_KNOWN_CLIENT: "https://matrix.diegoa.ca"
-      CONDUIT_WELL_KNOWN_SERVER: "matrix.diegoa.ca:443"
-      CONDUIT_MAX_CONCURRENT_REQUESTS: "100"
+      TUWUNEL_SERVER_NAME: diegoa.ca
+      TUWUNEL_PORT: "6167"
+      TUWUNEL_ADDRESS: "0.0.0.0"
+      TUWUNEL_DATABASE_PATH: /var/lib/matrix-conduit
+      TUWUNEL_ALLOW_REGISTRATION: "false"
+      TUWUNEL_ALLOW_FEDERATION: "false"
+      TUWUNEL_MAX_REQUEST_SIZE: "20000000"
+      TUWUNEL_TRUSTED_SERVERS: "[]"
+      TUWUNEL_WELL_KNOWN__CLIENT: "https://matrix.diegoa.ca"
+      TUWUNEL_WELL_KNOWN__SERVER: "matrix.diegoa.ca:443"
     volumes:
       - /srv/data/projects/docker-volumes/matrix-conduit:/var/lib/matrix-conduit
     networks:
