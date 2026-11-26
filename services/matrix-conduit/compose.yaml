@@ -11,7 +11,7 @@ networks:
 # Portainer stack need no change.
 services:
   conduit:
-    image: ghcr.io/matrix-construct/tuwunel:v2.0.0@sha256:3dde1e9b3503c68218f95415ec3ebff522bd945065ba76019d408543540d1730
+    image: ghcr.io/matrix-construct/tuwunel:v2.1.0@sha256:d63ce59869f341c09ee89e3a4e355147b18488f9293cc78bc9ab14ff2036f2b5
     container_name: conduit
     restart: unless-stopped
     # The first boot migrates the Conduit database and must not be killed part way.
