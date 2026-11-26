@@ -7,7 +7,7 @@ services:
   # Opt-in service. Run with:
   # docker compose -f compose.yaml -f compose.music-assistant.yaml up -d music-assistant-server
   music-assistant-server:
-    image: ghcr.io/music-assistant/server:beta@sha256:3d3001f2458b3313ba13bd566e263305eac4aa181f8d315d2af2d4bff78b49dc
+    image: ghcr.io/music-assistant/server:beta@sha256:2acb3ee333cb25266ff10ecec39611a4203c097930920f5adcd48903e610cb71
     container_name: music-assistant-server
     restart: unless-stopped
     # Network mode must be set to host for MA to work correctly
