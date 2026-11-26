@@ -9,7 +9,7 @@ volumes:
 
 services:
   paperless-ai:
-    image: clusterzx/paperless-ai:4.4.0@sha256:66b219a196c4e244c4f5f09a0fa5f31ac2786e62ff43a61c6eedca3c8ac93937
+    image: clusterzx/paperless-ai:v4.7.0@sha256:eff2134eab69ddfb8ead0c768687a4df22d964ab4b51b3fa5c1b1bac8cb10e5d
     container_name: paperless-ai
     restart: unless-stopped
     ports:
