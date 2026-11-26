@@ -61,7 +61,7 @@ services:
     networks:
       - app_network
   gotenberg:
-    image: docker.io/gotenberg/gotenberg:9.9@sha256:0fc05327fcc4af8ba84bb99b3da35fe728840d98cef9d3bf0d701bd077834eb5
+    image: docker.io/gotenberg/gotenberg:9.10@sha256:daede2c52129da3b9eef655fdad5de0c0a978f1119bb1c459ee88388982b1b70
     restart: unless-stopped
     # The gotenberg chromium route is used to convert .eml files. We do not
     # want to allow external content like tracking pixels or even javascript.
